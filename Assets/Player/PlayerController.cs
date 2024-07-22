@@ -68,6 +68,10 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
 
     Camera camera;
 
+    List<IngredientObject> unlockedIngredients;
+    [SerializeField]
+    IngredientMixingMenu ingredientMenu;
+
     void Awake()
     {
         _StateMachine = new StateMachine();
@@ -90,6 +94,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
         _StateMachine.Initialize(_playerIdleState);
 
         camera = Camera.main;
+
+        unlockedIngredients = new List<IngredientObject>();
     }
 
     // Update is called once per frame
@@ -197,6 +203,25 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
 
     }
 
+    public void CheckForHeadbonk()
+    {
+        int rayCount = 3;
+        for (int i = -1; i < rayCount - 1; i++)
+        {
+            Vector2 rayOrigin = new Vector2(transform.position.x + i * 0.9f * (playerWidth / 2.0f), transform.position.y);
+
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up, (playerHeight / 2.0f) + 0.02f, _groundLayers);
+            if (hit.collider != null)
+            {
+                if (_currentYSpeed > 0)
+                {
+                    _currentYSpeed = 0;
+                }
+                return;
+            }
+        }
+    }
+
     //extra
     public void Decelerate()
     {
@@ -252,6 +277,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if(collision.gameObject.CompareTag("ingredient"))
+        {
+            ingredientMenu.UnlockIngredient(collision.gameObject.GetComponent<Ingredient>().Pickup());
+        }
+
         _StateMachine.currentState.HandleTriggerCollision(collision);
     }
 

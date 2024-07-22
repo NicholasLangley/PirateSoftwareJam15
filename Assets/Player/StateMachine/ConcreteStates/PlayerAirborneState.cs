@@ -29,7 +29,11 @@ public class PlayerAirborneState : State
             //_player.changeAnimation(PlayerController.PLAYER_ANIMATION.Falling);
             _player._isJumping = false;
         }
-        else {/* _player.changeAnimation(PlayerController.PLAYER_ANIMATION.Jumping); */}
+        else 
+        {
+            _player.CheckForHeadbonk();
+            /* _player.changeAnimation(PlayerController.PLAYER_ANIMATION.Jumping); */
+        }
 
         if (_player._currentYSpeed == 0 && _player._isGrounded)
         {
