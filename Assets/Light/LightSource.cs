@@ -36,9 +36,12 @@ public class LightSource : MonoBehaviour
     float LightConeAngle;
 
     [SerializeField]
-    Light2D circleLight, coneLight;
+    Light2D circleLight, coneLight, silverCircleLight, silverConeLight;
     [SerializeField]
     LightColors lightColors;
+
+    [SerializeField]
+    HiddenObjectManager hiddenObjectManager;
 
     // Start is called before the first frame update
     void Start()
@@ -108,6 +111,7 @@ public class LightSource : MonoBehaviour
         //rotate spotlight to match
 
         coneLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
+        silverConeLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
 
         Ray maxConeRay = new Ray(transform.position, maxAimConeDirection.normalized);
         Ray minConeRay = new Ray(transform.position, minAimConeDirection.normalized);
@@ -180,6 +184,11 @@ public class LightSource : MonoBehaviour
 
     public void changeLightType(LIGHT_TYPE type)
     {
+        hiddenObjectManager.DisableAll();
+
+        silverCircleLight.enabled = false;
+        silverConeLight.enabled = false;
+
         switch(type)
         {
             case LIGHT_TYPE.mundane:
@@ -190,6 +199,9 @@ public class LightSource : MonoBehaviour
                 break;
             case LIGHT_TYPE.silver:
                 currentLightType = LIGHT_TYPE.silver;
+                hiddenObjectManager.EnableAll();
+                silverCircleLight.enabled = true;
+                silverConeLight.enabled = true;
                 break;
             case LIGHT_TYPE.red:
                 currentLightType = LIGHT_TYPE.red;
