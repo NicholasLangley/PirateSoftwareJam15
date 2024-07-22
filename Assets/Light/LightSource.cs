@@ -1,17 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class LightSource : MonoBehaviour
 {
     public enum LIGHT_TYPE {mundane, magical, silver, red, black, divine}
     LIGHT_TYPE currentLightType;
-
-    [Header("Light Types")]
-    [SerializeField]
-    Material mundaneLightMaterial;
-    [SerializeField]
-    Material magicalLightMaterial, silverLightMaterial, redLightMaterial, blackLightMaterial, divineLightMaterial;
 
     [Header("MeshREndering")]
     public CompositeCollider2D groundTilemap;
@@ -39,6 +34,11 @@ public class LightSource : MonoBehaviour
 
     [SerializeField]
     float LightConeAngle;
+
+    [SerializeField]
+    Light2D circleLight, coneLight;
+    [SerializeField]
+    LightColors lightColors;
 
     // Start is called before the first frame update
     void Start()
@@ -105,6 +105,10 @@ public class LightSource : MonoBehaviour
         Vector3 maxAimConeDirection = Quaternion.Euler(0, 0, LightConeAngle / 2.0f) * aimDirection;
         Vector3 minAimConeDirection = Quaternion.Euler(0, 0, -LightConeAngle / 2.0f) * aimDirection;
 
+        //rotate spotlight to match
+
+        coneLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
+
         Ray maxConeRay = new Ray(transform.position, maxAimConeDirection.normalized);
         Ray minConeRay = new Ray(transform.position, minAimConeDirection.normalized);
 
@@ -152,7 +156,7 @@ public class LightSource : MonoBehaviour
 
         //generate light mesh
         lightCollider.points = vertices;
-        lightMeshFilter.mesh = lightCollider.CreateMesh(false, false);
+        //lightMeshFilter.mesh = lightCollider.CreateMesh(false, false);
     }
 
     bool IsRayInbetweenRays(Ray targetRay, Ray minAngleRay, Ray maxAngleRay)
@@ -180,28 +184,24 @@ public class LightSource : MonoBehaviour
         {
             case LIGHT_TYPE.mundane:
                 currentLightType = LIGHT_TYPE.mundane;
-                lightMeshRenderer.material = mundaneLightMaterial;
                 break;
             case LIGHT_TYPE.magical:
                 currentLightType = LIGHT_TYPE.magical;
-                lightMeshRenderer.material = magicalLightMaterial;
                 break;
             case LIGHT_TYPE.silver:
                 currentLightType = LIGHT_TYPE.silver;
-                lightMeshRenderer.material = silverLightMaterial;
                 break;
             case LIGHT_TYPE.red:
                 currentLightType = LIGHT_TYPE.red;
-                lightMeshRenderer.material = redLightMaterial;
                 break;
             case LIGHT_TYPE.black:
                 currentLightType = LIGHT_TYPE.black;
-                lightMeshRenderer.material = blackLightMaterial;
                 break;
             case LIGHT_TYPE.divine:
                 currentLightType = LIGHT_TYPE.divine;
-                lightMeshRenderer.material = divineLightMaterial;
                 break;
         }
+        circleLight.color = lightColors.GetColor(type);
+        coneLight.color = lightColors.GetColor(type);
     }
 }
