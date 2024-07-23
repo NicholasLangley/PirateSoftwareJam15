@@ -11,16 +11,8 @@ public class LightSource : MonoBehaviour
     [Header("MeshREndering")]
     public CompositeCollider2D groundTilemap;
     Mesh groundMesh;
-    [SerializeField] 
-    MeshFilter lightMeshFilter;
-    [SerializeField]
-    MeshRenderer lightMeshRenderer;
-    [SerializeField]
-    PolygonCollider2D lightCollider;
 
-    //doesn't move to reduce wierd effects
-    [SerializeField]
-    Transform staticLightSourceTransform;
+    PolygonCollider2D lightCollider;
 
     [Header("Light properties")]
     [SerializeField]
@@ -43,25 +35,73 @@ public class LightSource : MonoBehaviour
     [SerializeField]
     HiddenObjectManager hiddenObjectManager;
 
+    [Header("Shadows")]
+    [SerializeField]
+    GameObject shadowFirePrefab;
+    float shadowFireTimer;
+    [SerializeField]
+    float shadowFireSpawnTime;
+    [SerializeField]
+    GameObject shadowFire;
+    [SerializeField]
+    ParticleSystem particleSystemA, particleSystemB;
+    [SerializeField]
+    GameObject shadowColliderPrefab;
+
+    enum LIGHT_OWNER { player, creature, none }
+
+    [Header("Light Ownership")]
+    [SerializeField]
+    LIGHT_OWNER lightOwner;
+    [SerializeField]
+    Vector3 aimDirection;
+
     // Start is called before the first frame update
     void Start()
     {
-        lightMeshFilter.mesh = new Mesh();
+        //lightMeshFilter.mesh = new Mesh();
+        GameObject lightColliderObject = new GameObject();
+        lightColliderObject.name = "light collider";
+        lightCollider = lightColliderObject.AddComponent<PolygonCollider2D>();
+        lightCollider.isTrigger = true;
         getGroundMesh();
         changeLightType(LIGHT_TYPE.mundane);
+        DrawLightMesh();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //CounterParentTransform();
-        if (Input.GetKeyDown(KeyCode.Alpha1)) { changeLightType(LIGHT_TYPE.mundane); }
-        else if (Input.GetKeyDown(KeyCode.Alpha2)) { changeLightType(LIGHT_TYPE.magical); }
-        else if (Input.GetKeyDown(KeyCode.Alpha3)) { changeLightType(LIGHT_TYPE.silver); }
-        else if (Input.GetKeyDown(KeyCode.Alpha4)) { changeLightType(LIGHT_TYPE.red); }
-        else if (Input.GetKeyDown(KeyCode.Alpha5)) { changeLightType(LIGHT_TYPE.black); }
-        else if (Input.GetKeyDown(KeyCode.Alpha6)) { changeLightType(LIGHT_TYPE.divine); }
-        DrawLightMesh();
+        //DEBUG keys
+        if (lightOwner == LIGHT_OWNER.player)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1)) { changeLightType(LIGHT_TYPE.mundane); }
+            else if (Input.GetKeyDown(KeyCode.Alpha2)) { changeLightType(LIGHT_TYPE.magical); }
+            else if (Input.GetKeyDown(KeyCode.Alpha3)) { changeLightType(LIGHT_TYPE.silver); }
+            else if (Input.GetKeyDown(KeyCode.Alpha4)) { changeLightType(LIGHT_TYPE.red); }
+            else if (Input.GetKeyDown(KeyCode.Alpha5)) { changeLightType(LIGHT_TYPE.black); }
+            else if (Input.GetKeyDown(KeyCode.Alpha6)) { changeLightType(LIGHT_TYPE.divine); }
+        }
+
+
+        if (Time.timeScale > 0f)
+        {
+            if (currentLightType == LIGHT_TYPE.black)
+            {
+                shadowFireTimer += Time.deltaTime;
+                if (shadowFireTimer >= shadowFireSpawnTime)
+                {
+                    SpawnShadowFire();
+                }
+            }
+            else
+            {
+                if(lightOwner != LIGHT_OWNER.none)
+                {
+                    DrawLightMesh();
+                }
+            }
+        }
     }
 
     void getGroundMesh()
@@ -100,11 +140,14 @@ public class LightSource : MonoBehaviour
             rays.Add(newRay);
         }
 
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePos.z = 0;
-        
+        if (lightOwner == LIGHT_OWNER.player)
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.z = 0;
 
-        Vector3 aimDirection = mousePos - transform.position;
+            aimDirection = mousePos - transform.position;
+        }
+
         Vector3 maxAimConeDirection = Quaternion.Euler(0, 0, LightConeAngle / 2.0f) * aimDirection;
         Vector3 minAimConeDirection = Quaternion.Euler(0, 0, -LightConeAngle / 2.0f) * aimDirection;
 
@@ -149,11 +192,11 @@ public class LightSource : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, lightRayDistance, lightBlockLayers);
             if (hit.collider != null)
             {
-                vertices[i] = staticLightSourceTransform.InverseTransformPoint(hit.point);
+                vertices[i] = lightCollider.transform.InverseTransformPoint(hit.point);
             }
             else 
             {
-                vertices[i] = staticLightSourceTransform.InverseTransformPoint(ray.GetPoint(lightRayDistance)); 
+                vertices[i] = lightCollider.transform.InverseTransformPoint(ray.GetPoint(lightRayDistance)); 
             }
             i++;
         }
@@ -186,10 +229,21 @@ public class LightSource : MonoBehaviour
     {
         hiddenObjectManager.DisableAll();
 
+        circleLight.enabled = true;
+        coneLight.enabled = true;
         silverCircleLight.enabled = false;
         silverConeLight.enabled = false;
 
-        switch(type)
+        lightCollider.gameObject.tag = "Light";
+
+        if(currentLightType == LIGHT_TYPE.black)
+        {
+            SpawnShadowFire();
+            shadowFire.SetActive(false);
+        }
+        
+
+        switch (type)
         {
             case LIGHT_TYPE.mundane:
                 currentLightType = LIGHT_TYPE.mundane;
@@ -205,9 +259,15 @@ public class LightSource : MonoBehaviour
                 break;
             case LIGHT_TYPE.red:
                 currentLightType = LIGHT_TYPE.red;
+                lightCollider.gameObject.tag = "RedLight";
                 break;
             case LIGHT_TYPE.black:
                 currentLightType = LIGHT_TYPE.black;
+                circleLight.enabled = false;
+                coneLight.enabled = false;
+                lightCollider.gameObject.tag = "Untagged";
+                shadowFire.SetActive(true);
+                SpawnShadowFire();
                 break;
             case LIGHT_TYPE.divine:
                 currentLightType = LIGHT_TYPE.divine;
@@ -215,5 +275,16 @@ public class LightSource : MonoBehaviour
         }
         circleLight.color = lightColors.GetColor(type);
         coneLight.color = lightColors.GetColor(type);
+    }
+
+    void SpawnShadowFire()
+    {
+        particleSystemA.Emit(1);
+        particleSystemB.Emit(1);
+
+        GameObject go = Instantiate(shadowColliderPrefab);
+        go.transform.position = transform.position;
+
+        shadowFireTimer = 0.0f;
     }
 }

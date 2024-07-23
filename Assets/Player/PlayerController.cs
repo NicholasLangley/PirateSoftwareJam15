@@ -281,8 +281,17 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
         {
             ingredientMenu.UnlockIngredient(collision.gameObject.GetComponent<Ingredient>().Pickup());
         }
+        
 
         _StateMachine.currentState.HandleTriggerCollision(collision);
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("RedLight"))
+        {
+            Kill();
+        }
     }
 
 }

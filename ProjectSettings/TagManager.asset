@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - ingredient
+  - Light
+  - RedLight
+  - BlackFire
   layers:
   - Default
   - TransparentFX
@@ -14,8 +17,8 @@ TagManager:
   - UI
   - Ground
   - Hidden
-  - 
-  - 
+  - Light
+  - HiddenCamera
   - 
   - 
   - 
