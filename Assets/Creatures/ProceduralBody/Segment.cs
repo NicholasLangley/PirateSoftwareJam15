@@ -178,8 +178,8 @@ public class Segment : MonoBehaviour
         leftSide = transform.position + CalculateSideOffset(leftAngle);
         rightSide = transform.position + CalculateSideOffset(rightAngle);
 
-        leftSideLimbGoal = transform.position + CalculateSideOffset(leftAngle + 45) * 3;
-        rightSideLimbGoal = transform.position + CalculateSideOffset(rightAngle - 45) * 3;
+        leftSideLimbGoal = transform.position + CalculateSideOffset(leftAngle + 45) * 4;
+        rightSideLimbGoal = transform.position + CalculateSideOffset(rightAngle - 45) * 4;
     }
 
     float NormalizeAngle(float angle)

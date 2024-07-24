@@ -16,7 +16,7 @@ public class HeadController : MonoBehaviour
     float lerpTimer;
     public float lerpDuration;
 
-    
+
     LineRenderer leftLR, rightLR, mainLR;
     [Header("Lines and Angles")]
     [SerializeField]
@@ -32,6 +32,9 @@ public class HeadController : MonoBehaviour
     MeshFilter meshFilter;
     [SerializeField]
     PolygonCollider2D bodyCollider;
+
+    [SerializeField]
+    GameObject leftEye, rightEye;
 
     // Start is called before the first frame update
     void Start()
@@ -95,6 +98,8 @@ public class HeadController : MonoBehaviour
             newHeadPos.z = head.transform.position.z;
 
             head.Constrain(newHeadPos);
+
+            MoveEyes();
         }
         else
         {
@@ -168,5 +173,11 @@ public class HeadController : MonoBehaviour
         fabrikGoal = isRightLimb ? tail.anchor.rightSideLimbGoal : tail.anchor.leftSideLimbGoal;
 
         lerpTimer = 0f;
+    }
+
+    void MoveEyes()
+    {
+        leftEye.transform.position = Vector3.Lerp(head.transform.position, head.leftSide, 0.5f);
+        rightEye.transform.position = Vector3.Lerp(head.transform.position, head.rightSide, 0.5f);
     }
 }

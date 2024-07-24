@@ -32,9 +32,6 @@ public class LightSource : MonoBehaviour
     [SerializeField]
     LightColors lightColors;
 
-    [SerializeField]
-    HiddenObjectManager hiddenObjectManager;
-
     [Header("Shadows")]
     [SerializeField]
     GameObject shadowFirePrefab;
@@ -227,8 +224,6 @@ public class LightSource : MonoBehaviour
 
     public void changeLightType(LIGHT_TYPE type)
     {
-        hiddenObjectManager.DisableAll();
-
         circleLight.enabled = true;
         coneLight.enabled = true;
         silverCircleLight.enabled = false;
@@ -253,7 +248,6 @@ public class LightSource : MonoBehaviour
                 break;
             case LIGHT_TYPE.silver:
                 currentLightType = LIGHT_TYPE.silver;
-                hiddenObjectManager.EnableAll();
                 silverCircleLight.enabled = true;
                 silverConeLight.enabled = true;
                 break;
