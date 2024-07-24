@@ -28,9 +28,9 @@ public class LightSource : MonoBehaviour
     float LightConeAngle;
 
     [SerializeField]
-    Light2D circleLight, coneLight, silverCircleLight, silverConeLight;
+    Light2D circleLight, coneLight, silverCircleLight, silverConeLight, highlightCircleLight, highlightConeLight;
     [SerializeField]
-    LightColors lightColors;
+    LightColors lightColors, highlightColors;
 
     [Header("Shadows")]
     [SerializeField]
@@ -152,6 +152,7 @@ public class LightSource : MonoBehaviour
 
         coneLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
         silverConeLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
+        highlightConeLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
 
         Ray maxConeRay = new Ray(transform.position, maxAimConeDirection.normalized);
         Ray minConeRay = new Ray(transform.position, minAimConeDirection.normalized);
@@ -269,6 +270,8 @@ public class LightSource : MonoBehaviour
         }
         circleLight.color = lightColors.GetColor(type);
         coneLight.color = lightColors.GetColor(type);
+        highlightCircleLight.color = highlightColors.GetColor(type);
+        highlightConeLight.color = highlightColors.GetColor(type);
     }
 
     void SpawnShadowFire()

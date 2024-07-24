@@ -20,7 +20,7 @@ TagManager:
   - Hidden
   - Light
   - HiddenCamera
-  - 
+  - Highlight
   - 
   - 
   - 
@@ -48,4 +48,7 @@ TagManager:
     locked: 0
   - name: HIdden
     uniqueID: 3719787599
+    locked: 0
+  - name: Highlight
+    uniqueID: 2444214987
     locked: 0
