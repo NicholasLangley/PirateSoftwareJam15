@@ -36,6 +36,8 @@ public class HeadController : MonoBehaviour
     [SerializeField]
     GameObject leftEye, rightEye;
 
+    public Vector3 headPosition;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,6 +46,7 @@ public class HeadController : MonoBehaviour
         if (isMeshType)
         {
             GameObject go = new GameObject();
+            go.transform.parent = transform;
             mainLR = go.AddComponent<LineRenderer>();
             mainLR.startWidth = lineWidth;
             mainLR.endWidth = lineWidth;
@@ -57,6 +60,7 @@ public class HeadController : MonoBehaviour
         else
         {
             GameObject go = new GameObject();
+            go.transform.parent = transform;
             mainLR = go.AddComponent<LineRenderer>();
             mainLR.startWidth = lineWidth;
             mainLR.endWidth = lineWidth;
@@ -66,6 +70,7 @@ public class HeadController : MonoBehaviour
 
 
             go = new GameObject();
+            go.transform.parent = transform;
             leftLR = go.AddComponent<LineRenderer>();
             leftLR.startWidth = lineWidth;
             leftLR.endWidth = lineWidth;
@@ -75,6 +80,7 @@ public class HeadController : MonoBehaviour
 
 
             go = new GameObject();
+            go.transform.parent = transform;
             rightLR = go.AddComponent<LineRenderer>();
             rightLR.startWidth = lineWidth;
             rightLR.endWidth = lineWidth;
@@ -94,10 +100,7 @@ public class HeadController : MonoBehaviour
     {
         if(!isLimb)
         {
-            Vector3 newHeadPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            newHeadPos.z = head.transform.position.z;
-
-            head.Constrain(newHeadPos);
+            head.Constrain(headPosition);
 
             MoveEyes();
         }
@@ -114,16 +117,13 @@ public class HeadController : MonoBehaviour
     void DrawLines()
     {
         List<Vector3> centerList = head.GetCenterList();
-        mainLR.positionCount = centerList.Count;
-        mainLR.SetPositions(centerList.ToArray());
+        DrawLine(mainLR, centerList);
 
         List<Vector3> leftList = head.GetLeftSideList();
-        leftLR.positionCount = leftList.Count;
-        leftLR.SetPositions(leftList.ToArray());
+        DrawLine(leftLR, leftList);
 
         List<Vector3> rightList = head.GetRightSideList();
-        rightLR.positionCount = rightList.Count;
-        rightLR.SetPositions(rightList.ToArray());
+        DrawLine(rightLR, rightList);
     }
 
     void DrawMesh()
@@ -139,8 +139,7 @@ public class HeadController : MonoBehaviour
 
         if (hasOutline)
         {
-            mainLR.positionCount = meshPoints.Count;
-            mainLR.SetPositions(meshPoints.ToArray());
+            DrawLine(mainLR, meshPoints);
         }
 
         Vector2[] vertices = new Vector2[meshPoints.Count];
@@ -177,7 +176,24 @@ public class HeadController : MonoBehaviour
 
     void MoveEyes()
     {
-        leftEye.transform.position = Vector3.Lerp(head.transform.position, head.leftSide, 0.5f);
-        rightEye.transform.position = Vector3.Lerp(head.transform.position, head.rightSide, 0.5f);
+        leftEye.transform.position = Vector3.Lerp(head.transform.position, head.leftSide, 0.5f) + transform.position;
+        rightEye.transform.position = Vector3.Lerp(head.transform.position, head.rightSide, 0.5f) + transform.position;
+    }
+
+    public void setHeadPosition(Vector3 pos)
+    {
+        headPosition = pos;
+    }
+
+    void DrawLine(LineRenderer lr, List<Vector3> worldPoints)
+    {
+        List<Vector3> transformedPoints = new List<Vector3>();
+
+        foreach (Vector3 worldPoint in worldPoints)
+        {
+            transformedPoints.Add(worldPoint + transform.position);
+        }
+        lr.positionCount = transformedPoints.Count;
+        lr.SetPositions(transformedPoints.ToArray());
     }
 }
