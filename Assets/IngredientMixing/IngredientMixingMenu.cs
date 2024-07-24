@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class IngredientMixingMenu : MonoBehaviour
+public class IngredientMixingMenu : Menu
 {
-    public bool isActive;
-
     List<IngredientObject> unlockedIngredients;
     public List<IngredientObject> currentIngredients;
 

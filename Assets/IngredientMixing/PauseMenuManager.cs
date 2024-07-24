@@ -5,17 +5,21 @@ using UnityEngine;
 public class PauseMenuManager : MonoBehaviour
 {
     [SerializeField]
-    MenuTile menuTile;
+    public MenuTile mixingMenuTile, alchemistsNoteMenuTile;
+    MenuTile currentTile;
 
     [SerializeField]
     float tileTransitionDuration;
 
     bool paused;
 
+    float delayTimer;
+
     // Start is called before the first frame update
     void Start()
     {
-        menuTile.transitionDuration = tileTransitionDuration;
+        mixingMenuTile.transitionDuration = tileTransitionDuration;
+        alchemistsNoteMenuTile.transitionDuration = tileTransitionDuration;
 
         paused = false;
     }
@@ -23,24 +27,41 @@ public class PauseMenuManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.I))
+        if(paused)
         {
-            if (paused) { Unpause(); }
-            else { Pause(); }
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.F))
+            {
+                if (delayTimer > 0.1f)CloseMenu();
+            }
+            delayTimer += Time.unscaledDeltaTime;
+        }
+
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.I))
+            {
+                OpenMenu(mixingMenuTile);
+            }
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                OpenMenu(alchemistsNoteMenuTile);
+            }
         }
     }
 
-    public void Pause()
+    public void OpenMenu(MenuTile menu)
     {
         Time.timeScale = 0f;
-        menuTile.ArriveFromBottom();
+        menu.ArriveFromBottom();
         paused = true;
+        currentTile = menu;
+        delayTimer = 0f;
     }
 
-    public void Unpause()
+    public void CloseMenu()
     {
         Time.timeScale = 1.0f;
-        menuTile.DepartToBottom();
+        currentTile.DepartToBottom();
         paused = false;
     }
 

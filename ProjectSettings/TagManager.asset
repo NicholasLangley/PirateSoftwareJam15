@@ -8,6 +8,7 @@ TagManager:
   - Light
   - RedLight
   - BlackFire
+  - Note
   layers:
   - Default
   - TransparentFX

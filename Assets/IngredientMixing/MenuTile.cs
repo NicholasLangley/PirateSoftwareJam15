@@ -5,7 +5,7 @@ using UnityEngine;
 public class MenuTile : MonoBehaviour
 {
     [SerializeField]
-    IngredientMixingMenu menu;
+    Menu menu;
 
     [SerializeField]
     Vector3 bottomOffScreenPos, onScreenPos;
