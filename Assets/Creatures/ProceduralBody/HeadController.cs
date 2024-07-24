@@ -5,9 +5,21 @@ using UnityEngine;
 public class HeadController : MonoBehaviour
 {
     [SerializeField]
-    Segment head;
+    Segment head, tail;
 
+    [Header("FABRIK")]
+    [SerializeField]
+    bool isLimb, isRightLimb;
+    [SerializeField]
+    float limbReachLength;
+    Vector3 fabrikStart, fabrikGoal;
+    float lerpTimer;
+    public float lerpDuration;
+
+    
     LineRenderer leftLR, rightLR, mainLR;
+    [Header("Lines and Angles")]
+    [SerializeField]
     public float lineWidth;
     public float minAngle;
 
@@ -19,7 +31,7 @@ public class HeadController : MonoBehaviour
     [SerializeField]
     MeshFilter meshFilter;
     [SerializeField]
-    PolygonCollider2D collider;
+    PolygonCollider2D bodyCollider;
 
     // Start is called before the first frame update
     void Start()
@@ -69,19 +81,29 @@ public class HeadController : MonoBehaviour
         }
 
         head.SetMaxAngle(minAngle);
+        lerpTimer = 0;
 
+        if (isLimb) { updateGoalPosition(); }
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 newHeadPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        newHeadPos.z = head.transform.position.z;
+        if(!isLimb)
+        {
+            Vector3 newHeadPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            newHeadPos.z = head.transform.position.z;
 
-        head.Constrain(newHeadPos);
+            head.Constrain(newHeadPos);
+        }
+        else
+        {
+            FABRIK();
+        }
 
         if (isMeshType) { DrawMesh(); }
         else { DrawLines(); }
+
     }
 
     void DrawLines()
@@ -123,7 +145,28 @@ public class HeadController : MonoBehaviour
             vertices[i++] = point;
         }
 
-        collider.points = vertices;
-        meshFilter.mesh = collider.CreateMesh(false, false);
+        bodyCollider.points = vertices;
+        meshFilter.mesh = bodyCollider.CreateMesh(false, false);
+    }
+
+    //Forward And Backward Reaching Inverse Kinematics
+    void FABRIK()
+    {
+        lerpTimer += Time.deltaTime;
+
+        head.Constrain(Vector3.Lerp(fabrikStart, fabrikGoal, lerpTimer/lerpDuration));
+        tail.ReverseConstrain(isRightLimb ? tail.anchor.rightSide : tail.anchor.leftSide);
+
+        //check for distance
+        Vector3 distanceFromGoal = fabrikGoal - head.transform.position;
+        if (distanceFromGoal.magnitude > limbReachLength && lerpTimer > lerpDuration) { updateGoalPosition(); }
+    }
+
+    public void updateGoalPosition()
+    {
+        fabrikStart = head.transform.position;
+        fabrikGoal = isRightLimb ? tail.anchor.rightSideLimbGoal : tail.anchor.leftSideLimbGoal;
+
+        lerpTimer = 0f;
     }
 }

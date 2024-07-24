@@ -11,7 +11,11 @@ public class Segment : MonoBehaviour
     public Segment previousSegment;
     public SpriteRenderer sr;
 
-    Vector3 rightSide, leftSide, currentDirection;
+    public Vector3 rightSide, leftSide, currentDirection;
+    public Vector3 rightSideLimbGoal, leftSideLimbGoal;
+
+    [SerializeField]
+    public Segment anchor;
 
     void Start()
     {
@@ -20,6 +24,7 @@ public class Segment : MonoBehaviour
         {
             nextSegment.previousSegment = this;
         }
+        currentDirection = Vector3.right;
     }
 
     public void Constrain(Vector3 nextPos)
@@ -54,6 +59,41 @@ public class Segment : MonoBehaviour
             }
 
             nextSegment.Constrain(transform.position + vectorToNextSegment);
+        }
+
+        CalculateSides();
+    }
+
+    public void ReverseConstrain(Vector3 nextPos)
+    {
+        Vector3 rDirection;
+        if (nextSegment == null)
+        {
+            transform.position = nextPos;
+            rDirection = transform.position - previousSegment.transform.position;
+        }
+        else
+        {
+            transform.position = nextPos;
+            rDirection = nextSegment.transform.position - transform.position;
+        }
+
+        if (previousSegment != null)
+        {
+            Vector3 vectorToNextSegment = previousSegment.transform.position - transform.position;
+            vectorToNextSegment = vectorToNextSegment.normalized * distanceToNextSegment;
+
+            /*//calculate angle
+            if (nextSegment != null)
+            {
+                float interSegmentAngle = Vector3.SignedAngle(rDirection, vectorToNextSegment, Vector3.back);
+                if (Mathf.Abs(interSegmentAngle) < minAngle)
+                {
+                    vectorToNextSegment = Quaternion.Euler(0, 0, interSegmentAngle >= 0 ? -minAngle : minAngle) * rDirection;
+                }
+            }*/
+
+            previousSegment.ReverseConstrain(transform.position + vectorToNextSegment);
         }
 
         CalculateSides();
@@ -137,6 +177,9 @@ public class Segment : MonoBehaviour
 
         leftSide = transform.position + CalculateSideOffset(leftAngle);
         rightSide = transform.position + CalculateSideOffset(rightAngle);
+
+        leftSideLimbGoal = transform.position + CalculateSideOffset(leftAngle + 45) * 3;
+        rightSideLimbGoal = transform.position + CalculateSideOffset(rightAngle - 45) * 3;
     }
 
     float NormalizeAngle(float angle)
