@@ -5,8 +5,11 @@ using UnityEngine.Rendering.Universal;
 
 public class LightSource : MonoBehaviour
 {
-    public enum LIGHT_TYPE {mundane, magical, silver, red, black, divine}
-    LIGHT_TYPE currentLightType;
+    public enum LIGHT_TYPE {mundane, magical, silver, red, black, divine, none}
+    [SerializeField]
+    public LIGHT_TYPE currentLightType;
+    public LIGHT_TYPE currentGrenadeLightType;
+    LIGHT_TYPE queuedLightType;
 
     [Header("MeshREndering")]
     public CompositeCollider2D groundTilemap;
@@ -33,8 +36,8 @@ public class LightSource : MonoBehaviour
     LightColors lightColors, highlightColors;
 
     [Header("Shadows")]
-    [SerializeField]
-    GameObject shadowFirePrefab;
+    //[SerializeField]
+    //GameObject shadowFirePrefab;
     float shadowFireTimer;
     [SerializeField]
     float shadowFireSpawnTime;
@@ -45,7 +48,7 @@ public class LightSource : MonoBehaviour
     [SerializeField]
     GameObject shadowColliderPrefab;
 
-    enum LIGHT_OWNER { player, creature, none }
+    enum LIGHT_OWNER { player, creature, grenade, none }
 
     [Header("Light Ownership")]
     [SerializeField]
@@ -53,16 +56,30 @@ public class LightSource : MonoBehaviour
     [SerializeField]
     Vector3 aimDirection;
 
+    [Header("LightGrenade")]
+    [SerializeField]
+    float explosionDuration;
+    [SerializeField]
+    float growthDuration, startSize, maxSize;
+    float growthTimer;
+    [SerializeField]
+    LightGrenade grenadePrefab;
+    
+
     // Start is called before the first frame update
     void Start()
     {
+        currentGrenadeLightType = LIGHT_TYPE.none;
         //lightMeshFilter.mesh = new Mesh();
-        GameObject lightColliderObject = new GameObject();
-        lightColliderObject.name = "light collider";
-        lightCollider = lightColliderObject.AddComponent<PolygonCollider2D>();
-        lightCollider.isTrigger = true;
+        if (lightOwner == LIGHT_OWNER.grenade) 
+        { 
+            groundTilemap = GameObject.FindGameObjectWithTag("GroundTilemap").GetComponent<CompositeCollider2D>();
+            growthTimer = 0;
+        }
+
+        SpawnCollider();
         getGroundMesh();
-        changeLightType(LIGHT_TYPE.mundane);
+        changeLightType(currentLightType);
         DrawLightMesh();
     }
 
@@ -78,8 +95,13 @@ public class LightSource : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.Alpha4)) { changeLightType(LIGHT_TYPE.red); }
             else if (Input.GetKeyDown(KeyCode.Alpha5)) { changeLightType(LIGHT_TYPE.black); }
             else if (Input.GetKeyDown(KeyCode.Alpha6)) { changeLightType(LIGHT_TYPE.divine); }
-        }
 
+            if (Input.GetKeyDown(KeyCode.Mouse0)) { SpawnExplosive(); }
+        }
+        else if (lightOwner == LIGHT_OWNER.grenade)
+        {
+            Explosion();
+        }
 
         if (Time.timeScale > 0f)
         {
@@ -89,6 +111,7 @@ public class LightSource : MonoBehaviour
                 if (shadowFireTimer >= shadowFireSpawnTime)
                 {
                     SpawnShadowFire();
+                    if (lightOwner == LIGHT_OWNER.player) { CalculateAimDirection(); }
                 }
             }
             else
@@ -139,35 +162,36 @@ public class LightSource : MonoBehaviour
 
         if (lightOwner == LIGHT_OWNER.player)
         {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePos.z = 0;
-
-            aimDirection = mousePos - transform.position;
+            CalculateAimDirection();
         }
 
         Vector3 maxAimConeDirection = Quaternion.Euler(0, 0, LightConeAngle / 2.0f) * aimDirection;
         Vector3 minAimConeDirection = Quaternion.Euler(0, 0, -LightConeAngle / 2.0f) * aimDirection;
 
-        //rotate spotlight to match
-
-        coneLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
-        silverConeLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
-        highlightConeLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
-
         Ray maxConeRay = new Ray(transform.position, maxAimConeDirection.normalized);
         Ray minConeRay = new Ray(transform.position, minAimConeDirection.normalized);
 
-        rays.Add(maxConeRay);
-        rays.Add(minConeRay);
-
-        //more filler rays to make light cone less choppy
-        anglePerRay = Vector3.SignedAngle(maxConeRay.direction, minConeRay.direction, Vector3.back) / fillerRayCount;
-        for (int j = 0; j < fillerRayCount; j++)
+        if (lightOwner != LIGHT_OWNER.grenade)
         {
-            Vector3 rayDirection = Quaternion.Euler(0, 0, anglePerRay * j) * minConeRay.direction;
-            Ray newRay = new Ray(transform.position, rayDirection.normalized);
+           
+            //rotate spotlight to match
 
-            rays.Add(newRay);
+            coneLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
+            silverConeLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
+            highlightConeLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
+
+            rays.Add(maxConeRay);
+            rays.Add(minConeRay);
+
+            //more filler rays to make light cone less choppy
+            anglePerRay = Vector3.SignedAngle(maxConeRay.direction, minConeRay.direction, Vector3.back) / fillerRayCount;
+            for (int j = 0; j < fillerRayCount; j++)
+            {
+                Vector3 rayDirection = Quaternion.Euler(0, 0, anglePerRay * j) * minConeRay.direction;
+                Ray newRay = new Ray(transform.position, rayDirection.normalized);
+
+                rays.Add(newRay);
+            }
         }
 
         //sort rays by angle so that the polygon can be drawn in correct order
@@ -183,9 +207,17 @@ public class LightSource : MonoBehaviour
         Vector2[] vertices = new Vector2[rays.Count];
 
         int i = 0;
-        foreach(Ray ray in rays)
+        foreach (Ray ray in rays)
         {
-            float lightRayDistance = IsRayInbetweenRays(ray, minConeRay, maxConeRay) ? lanternConeDistance : lanternSphereDistance;
+            float lightRayDistance;
+            if (lightOwner != LIGHT_OWNER.grenade)
+            {
+                lightRayDistance = IsRayInbetweenRays(ray, minConeRay, maxConeRay) ? lanternConeDistance : lanternSphereDistance;
+            }
+            else 
+            {
+                lightRayDistance = lanternSphereDistance;
+            }
 
             RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, lightRayDistance, lightBlockLayers);
             if (hit.collider != null)
@@ -213,6 +245,14 @@ public class LightSource : MonoBehaviour
         return false;
     }
 
+    void CalculateAimDirection()
+    {
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos.z = 0;
+
+        aimDirection = mousePos - transform.position;
+    }
+
     void CounterParentTransform()
     {
         Transform pt = transform.parent;
@@ -223,12 +263,26 @@ public class LightSource : MonoBehaviour
         transform.localScale = new Vector3(1.0f / pt.localScale.x, 1.0f / pt.localScale.y, 1.0f/ pt.localScale.z);
     }
 
+    void SpawnCollider()
+    {
+        if (lightCollider != null) { Destroy(lightCollider.gameObject); }
+        GameObject lightColliderObject = new GameObject();
+        lightColliderObject.name = "light collider";
+        lightCollider = lightColliderObject.AddComponent<PolygonCollider2D>();
+        lightCollider.isTrigger = true;
+    }
+
     public void changeLightType(LIGHT_TYPE type)
     {
+        queuedLightType = type;
         circleLight.enabled = true;
-        coneLight.enabled = true;
         silverCircleLight.enabled = false;
-        silverConeLight.enabled = false;
+
+        if (lightOwner != LIGHT_OWNER.grenade) 
+        {
+            coneLight.enabled = true;
+            silverConeLight.enabled = false; 
+        }
 
         lightCollider.gameObject.tag = "Light";
 
@@ -250,7 +304,7 @@ public class LightSource : MonoBehaviour
             case LIGHT_TYPE.silver:
                 currentLightType = LIGHT_TYPE.silver;
                 silverCircleLight.enabled = true;
-                silverConeLight.enabled = true;
+                if (lightOwner != LIGHT_OWNER.grenade) { silverConeLight.enabled = true; }
                 break;
             case LIGHT_TYPE.red:
                 currentLightType = LIGHT_TYPE.red;
@@ -259,22 +313,28 @@ public class LightSource : MonoBehaviour
             case LIGHT_TYPE.black:
                 currentLightType = LIGHT_TYPE.black;
                 circleLight.enabled = false;
-                coneLight.enabled = false;
+                if (lightOwner != LIGHT_OWNER.grenade) { coneLight.enabled = false; }
                 lightCollider.gameObject.tag = "Untagged";
                 shadowFire.SetActive(true);
                 SpawnShadowFire();
                 break;
             case LIGHT_TYPE.divine:
+                lightCollider.gameObject.tag = "DivineLight";
                 currentLightType = LIGHT_TYPE.divine;
                 break;
         }
         circleLight.color = lightColors.GetColor(type);
-        coneLight.color = lightColors.GetColor(type);
+        if (lightOwner != LIGHT_OWNER.grenade) { coneLight.color = lightColors.GetColor(type); }
         highlightCircleLight.color = highlightColors.GetColor(type);
-        highlightConeLight.color = highlightColors.GetColor(type);
+        if (lightOwner != LIGHT_OWNER.grenade) { highlightConeLight.color = highlightColors.GetColor(type); }
     }
 
-    void SpawnShadowFire()
+    public void queueNewLightType(LIGHT_TYPE type)
+    {
+        queuedLightType = type;
+        Debug.Log(queuedLightType);
+    }
+        void SpawnShadowFire()
     {
         particleSystemA.Emit(1);
         particleSystemB.Emit(1);
@@ -283,5 +343,54 @@ public class LightSource : MonoBehaviour
         go.transform.position = transform.position;
 
         shadowFireTimer = 0.0f;
+    }
+
+    public void ChangeGrenadeLightType(LIGHT_TYPE type)
+    {
+        currentGrenadeLightType = type;
+    }
+
+
+    void Explosion()
+    {
+        growthTimer += Time.deltaTime;
+        float newSize;
+        if(growthTimer < growthDuration + explosionDuration)
+        {
+            newSize = Mathf.Lerp(startSize, maxSize, growthTimer / growthDuration);
+        }
+        else
+        {
+            newSize = Mathf.Lerp(maxSize, startSize, growthTimer - growthDuration - explosionDuration / growthDuration);
+        }
+
+        if (currentLightType == LIGHT_TYPE.black)
+        {
+            newSize /= 2.0f;
+            shadowFire.transform.localScale = new Vector3(newSize, newSize, 1);
+        }
+        else
+        {
+            circleLight.shapeLightFalloffSize = newSize + 3f;
+            silverCircleLight.shapeLightFalloffSize = newSize + 3f;
+            highlightCircleLight.shapeLightFalloffSize = newSize + 3f;
+
+            lanternSphereDistance = newSize - 0.8f;
+        }
+
+        if (growthTimer > growthDuration + explosionDuration + growthDuration)
+        {
+            Destroy(lightCollider.gameObject);
+            Destroy(gameObject);
+        }
+    }
+
+
+    void SpawnExplosive()
+    {
+        if (currentGrenadeLightType == LIGHT_TYPE.none || Time.deltaTime == 0) { return; }
+        LightGrenade grenade = Instantiate<LightGrenade>(grenadePrefab);
+        grenade.transform.position = transform.position;
+        grenade.Initialize(aimDirection, currentGrenadeLightType);
     }
 }

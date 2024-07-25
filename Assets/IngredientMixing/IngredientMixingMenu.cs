@@ -9,10 +9,11 @@ public class IngredientMixingMenu : Menu
     public List<IngredientObject> currentIngredients;
 
     List<LightSource.LIGHT_TYPE> unlockedLightTypes;
+    List<LightSource.LIGHT_TYPE> unlockedGrenadeTypes;
     // Start is called before the first frame update
 
     [SerializeField]
-    GameObject unlockedIngredientGrid, currentIngredientsGrid, unlockedLightGrid, IngredientUIButtonPrefab, FireUIButtonPrefab;
+    GameObject unlockedIngredientGrid, currentIngredientsGrid, unlockedLightGrid, grenadeGrid, IngredientUIButtonPrefab, FireUIButtonPrefab, grenadeUIButtonPrefab;
 
     [Header("Recipies")]
     [SerializeField]
@@ -21,14 +22,19 @@ public class IngredientMixingMenu : Menu
     [SerializeField]
     LightSource playerLantern;
 
+    bool grenadesUnlocked;
+
     void Start()
     {
         isActive = false;
+        grenadesUnlocked = false;
         unlockedIngredients = new List<IngredientObject>();
         currentIngredients = new List<IngredientObject>();
 
         unlockedLightTypes = new List<LightSource.LIGHT_TYPE>();
         UnlockLight(LightSource.LIGHT_TYPE.mundane);
+
+        unlockedGrenadeTypes = new List<LightSource.LIGHT_TYPE>();
     }
 
     // Update is called once per frame
@@ -63,6 +69,31 @@ public class IngredientMixingMenu : Menu
 
             newButton.GetComponent<Button>().onClick.AddListener(() => playerLantern.changeLightType(lightType));
         }
+        if (grenadesUnlocked) { UnlockGrenadeType(lightType); }
+    }
+
+    public void UnlockGrenadeType(LightSource.LIGHT_TYPE lightType)
+    {
+        if (!unlockedGrenadeTypes.Contains(lightType))
+        {
+            unlockedGrenadeTypes.Add(lightType);
+
+            GameObject newButton = Instantiate(grenadeUIButtonPrefab, grenadeGrid.transform);
+            FireUIButton uiButton = newButton.GetComponent<FireUIButton>();
+            uiButton.SetFireType(lightType);
+
+            newButton.GetComponent<Button>().onClick.AddListener(() => playerLantern.ChangeGrenadeLightType(lightType));
+        }
+    }
+
+    public void UnlockGrenades()
+    {
+        grenadesUnlocked = true;
+        foreach (LightSource.LIGHT_TYPE type in unlockedLightTypes)
+        {
+            UnlockGrenadeType(type);
+        }
+        playerLantern.ChangeGrenadeLightType(unlockedGrenadeTypes[0]);
     }
 
     public void AddIngredientToMix(IngredientObject ingredient)

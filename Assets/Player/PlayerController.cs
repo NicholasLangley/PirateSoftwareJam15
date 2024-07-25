@@ -72,7 +72,11 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
     [SerializeField]
     IngredientMixingMenu ingredientMenu;
 
-    void Awake()
+    [SerializeField]
+    LightSource lantern;
+
+    public int touchingDivineLight;
+void Awake()
     {
         _StateMachine = new StateMachine();
         _playerIdleState = new PlayerIdleState(this, _StateMachine);
@@ -96,6 +100,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
         camera = Camera.main;
 
         unlockedIngredients = new List<IngredientObject>();
+        touchingDivineLight = 0;
     }
 
     // Update is called once per frame
@@ -281,9 +286,17 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
         {
             ingredientMenu.UnlockIngredient(collision.gameObject.GetComponent<Ingredient>().Pickup());
         }
+        else if (collision.gameObject.CompareTag("GrenadePickup"))
+        {
+            collision.gameObject.GetComponent<GrenadeUnlocker>().Pickup();
+        }
         else if (collision.gameObject.CompareTag("Note"))
         {
             collision.gameObject.GetComponent<AlchemistNote>().Activate();
+        }
+        else if (collision.gameObject.CompareTag("DivineLight"))
+        {
+            touchingDivineLight++;
         }
         else
         {
@@ -295,7 +308,14 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
     {
         if (collision.gameObject.CompareTag("RedLight"))
         {
-            Kill();
+            if (touchingDivineLight > 0 || lantern.currentLightType == LightSource.LIGHT_TYPE.divine)
+            {
+                Debug.Log("NeutralEnd");
+            }
+            else
+            {
+                Kill();
+            }
         }
         
     }
@@ -306,6 +326,12 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
         {
             collision.gameObject.GetComponent<AlchemistNote>().Deactivate();
         }
+        else if (collision.gameObject.CompareTag("DivineLight"))
+        {
+            touchingDivineLight--;
+        }
     }
+
+    
 
 }

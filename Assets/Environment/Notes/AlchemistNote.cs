@@ -14,18 +14,23 @@ public class AlchemistNote : MonoBehaviour
 
     public bool isActive;
     public float activeSizeModifier;
-    float timer;
+    float timer, floatingTimer, startingYValue;
     [SerializeField]
     float growthTime;
     // Start is called before the first frame update
     void Start()
     {
         isActive = false;
+        startingYValue = transform.position.y;
+        floatingTimer = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
+        floatingTimer += Time.deltaTime;
+        transform.position = new Vector3(transform.position.x, startingYValue + Mathf.Sin(floatingTimer * 2) * 0.05f, transform.position.z);
+
         if(timer < growthTime)
         {
             timer += Time.deltaTime;

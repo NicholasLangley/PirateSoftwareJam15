@@ -2,19 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ingredient : MonoBehaviour
+public class GrenadeUnlocker : MonoBehaviour
 {
-    [SerializeField]
-    public IngredientObject ingredientObject;
-
     float floatingTimer, startingYValue;
+
+    [SerializeField]
+    IngredientMixingMenu menu;
 
     SpriteRenderer sr;
     // Start is called before the first frame update
     void Start()
     {
-        sr = gameObject.GetComponent<SpriteRenderer>();
-        sr.sprite = ingredientObject.sprite;
         startingYValue = transform.position.y;
         floatingTimer = 0;
     }
@@ -26,10 +24,9 @@ public class Ingredient : MonoBehaviour
         transform.position = new Vector3(transform.position.x, startingYValue + Mathf.Sin(floatingTimer * 2) * 0.05f, transform.position.z);
     }
 
-    public IngredientObject Pickup()
+    public void Pickup()
     {
-        IngredientObject ingredient = ingredientObject;
+        menu.UnlockGrenades();
         GameObject.Destroy(gameObject);
-        return ingredient;
     }
 }

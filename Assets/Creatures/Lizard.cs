@@ -27,6 +27,7 @@ public class Lizard : MonoBehaviour
         currentDirection = Random.insideUnitCircle;
         currentDirection.Normalize();
         lerpTimer = 0;
+        if (player == null) { player = GameObject.FindGameObjectWithTag("Player").transform; }
     }
 
     // Update is called once per frame
