@@ -2,23 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Menu : MonoBehaviour
+public abstract class Trigger : MonoBehaviour
 {
-    public bool isActive;
     // Start is called before the first frame update
-    protected void Start()
+    void Start()
     {
-        isActive = false;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
-    public virtual void Clear()
-    {
-
-    }
+    public abstract void TriggerEffects(PlayerController player);
 }

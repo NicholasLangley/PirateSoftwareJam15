@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using UnityEngine.Rendering.Universal;
 
 public class LightSource : MonoBehaviour
@@ -12,8 +13,8 @@ public class LightSource : MonoBehaviour
     LIGHT_TYPE queuedLightType;
 
     [Header("MeshREndering")]
-    public CompositeCollider2D groundTilemap;
-    Mesh groundMesh;
+    public List<CompositeCollider2D> groundTilemaps;
+    List<Mesh> groundMeshes;
 
     PolygonCollider2D lightCollider;
 
@@ -31,7 +32,7 @@ public class LightSource : MonoBehaviour
     float LightConeAngle;
 
     [SerializeField]
-    Light2D circleLight, coneLight, silverCircleLight, silverConeLight, highlightCircleLight, highlightConeLight;
+    Light2D circleLight, coneLight, silverCircleLight, silverConeLight, highlightCircleLight, highlightConeLight, mundaneCircle, mundaneCone;
     [SerializeField]
     LightColors lightColors, highlightColors;
 
@@ -64,18 +65,21 @@ public class LightSource : MonoBehaviour
     float growthTimer;
     [SerializeField]
     LightGrenade grenadePrefab;
-    
+
+    [Header("Silver Background HACK")]
+    [SerializeField]
+    TilemapRenderer magicalBackground, magicalGround;
 
     // Start is called before the first frame update
     void Start()
     {
+        groundTilemaps = new List<CompositeCollider2D>();
+        groundMeshes = new List<Mesh>();
+
         currentGrenadeLightType = LIGHT_TYPE.none;
-        //lightMeshFilter.mesh = new Mesh();
-        if (lightOwner == LIGHT_OWNER.grenade) 
-        { 
-            groundTilemap = GameObject.FindGameObjectWithTag("GroundTilemap").GetComponent<CompositeCollider2D>();
-            growthTimer = 0;
-        }
+        UpdateActiveTilemaps();
+        growthTimer = 0;
+
 
         SpawnCollider();
         getGroundMesh();
@@ -124,30 +128,48 @@ public class LightSource : MonoBehaviour
         }
     }
 
+    public void UpdateActiveTilemaps()
+    {
+        groundTilemaps.Clear();
+        foreach (GameObject tilemapObject in GameObject.FindGameObjectsWithTag("GroundTilemap"))
+        {
+            if (tilemapObject.activeInHierarchy) { groundTilemaps.Add(tilemapObject.GetComponent<CompositeCollider2D>()); }
+        }
+    }
+
     void getGroundMesh()
     {
-        groundMesh = groundTilemap.CreateMesh(false, false);
+        groundMeshes.Clear();
+        foreach(CompositeCollider2D tilemap in groundTilemaps)
+        {
+            groundMeshes.Add(tilemap.CreateMesh(false, false));
+        }
+        
     }
 
     void DrawLightMesh()
     {
         List<Ray> rays = new List<Ray>();
+
         //1 ray per vertice of light blocking meshes, 2 additional rays slightly offset from vertice to extend around colors
-        foreach (Vector3 vertex in groundMesh.vertices)
+        foreach(Mesh groundMesh in groundMeshes)
         {
-             Vector3 direction = vertex - transform.position;
-            direction.z = 0;
-             Ray newRay = new Ray(transform.position, direction.normalized);
-             float rayAngle = Vector3.Angle(newRay.direction, Vector3.right);
+            foreach (Vector3 vertex in groundMesh.vertices)
+            {
+                Vector3 direction = vertex - transform.position;
+                direction.z = 0;
+                Ray newRay = new Ray(transform.position, direction.normalized);
+                float rayAngle = Vector3.Angle(newRay.direction, Vector3.right);
 
-             Vector3 rotatedDirectionUp = Quaternion.Euler(0, 0, rayAngle + 0.005f) * Vector3.right;
-             Vector3 rotatedDirectionDown = Quaternion.Euler(0, 0, rayAngle - 0.005f) * Vector3.right;
-             Ray newRayUp = new Ray(transform.position, rotatedDirectionUp.normalized);
-             Ray newRayDown = new Ray(transform.position, rotatedDirectionDown.normalized);
+                Vector3 rotatedDirectionUp = Quaternion.Euler(0, 0, rayAngle + 0.005f) * Vector3.right;
+                Vector3 rotatedDirectionDown = Quaternion.Euler(0, 0, rayAngle - 0.005f) * Vector3.right;
+                Ray newRayUp = new Ray(transform.position, rotatedDirectionUp.normalized);
+                Ray newRayDown = new Ray(transform.position, rotatedDirectionDown.normalized);
 
-             rays.Add(newRay);
-             rays.Add(newRayUp);
-             rays.Add(newRayDown);
+                rays.Add(newRay);
+                rays.Add(newRayUp);
+                rays.Add(newRayDown);
+            }
         }
 
         //generate filler rays to make mesh more circular
@@ -274,6 +296,14 @@ public class LightSource : MonoBehaviour
 
     public void changeLightType(LIGHT_TYPE type)
     {
+        //HACK to make background appear once player first changes light types
+        if(type == LIGHT_TYPE.magical && magicalBackground != null && magicalGround != null)
+        {
+            magicalBackground.sortingLayerName = "Default";
+            magicalGround.sortingLayerName = "Default";
+        }
+
+
         queuedLightType = type;
         circleLight.enabled = true;
         silverCircleLight.enabled = false;
@@ -291,7 +321,6 @@ public class LightSource : MonoBehaviour
             SpawnShadowFire();
             shadowFire.SetActive(false);
         }
-        
 
         switch (type)
         {

@@ -12,6 +12,7 @@ TagManager:
   - GroundTilemap
   - DivineLight
   - GrenadePickup
+  - Trigger
   layers:
   - Default
   - TransparentFX
@@ -25,8 +26,8 @@ TagManager:
   - HiddenCamera
   - Highlight
   - Player
-  - 
-  - 
+  - MagicBackground
+  - Trigger
   - 
   - 
   - 
@@ -51,6 +52,9 @@ TagManager:
     locked: 0
   - name: HIdden
     uniqueID: 3719787599
+    locked: 0
+  - name: MagicLighting
+    uniqueID: 3712726481
     locked: 0
   - name: Highlight
     uniqueID: 2444214987

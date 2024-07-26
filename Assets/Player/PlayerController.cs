@@ -67,6 +67,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
     #endregion
 
     Camera camera;
+    [SerializeField]
+    public float minCameraX, maxCameraX, minCameraY, maxCameraY, cameraYOffset;
 
     List<IngredientObject> unlockedIngredients;
     [SerializeField]
@@ -139,9 +141,22 @@ void Awake()
 
     public void UpdateCameraPosition()
     {
+        Vector3 destPos = camera.transform.position;
+        destPos.x = Mathf.Clamp(transform.position.x, minCameraX, maxCameraX);
+        destPos.y = Mathf.Clamp(transform.position.y + cameraYOffset, minCameraY, maxCameraY);
+
+        float decay = 25;
         Vector3 newPos = camera.transform.position;
-        newPos.x = transform.position.x;
+        newPos.x = expDecay(newPos.x, destPos.x, decay, Time.deltaTime);
+        newPos.y = expDecay(newPos.y, destPos.y, decay, Time.deltaTime);
+
         camera.transform.position = newPos;
+    }
+
+    //smoother lerp
+    public static float expDecay(float a, float b, float decay, float deltaTime)
+    {
+        return b + ((a - b) * Mathf.Exp(-decay * deltaTime));
     }
 
     public void checkDirectionToFace(float accel)
@@ -297,6 +312,10 @@ void Awake()
         else if (collision.gameObject.CompareTag("DivineLight"))
         {
             touchingDivineLight++;
+        }
+        else if (collision.gameObject.CompareTag("Trigger"))
+        {
+            collision.gameObject.GetComponent<Trigger>().TriggerEffects(this);
         }
         else
         {

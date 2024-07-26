@@ -32,7 +32,7 @@ public class IngredientMixingMenu : Menu
         currentIngredients = new List<IngredientObject>();
 
         unlockedLightTypes = new List<LightSource.LIGHT_TYPE>();
-        UnlockLight(LightSource.LIGHT_TYPE.mundane);
+        UnlockLight(LightSource.LIGHT_TYPE.magical);
 
         unlockedGrenadeTypes = new List<LightSource.LIGHT_TYPE>();
     }
@@ -54,6 +54,9 @@ public class IngredientMixingMenu : Menu
             uiButton.SetIngredient(ingredient);
 
             newButton.GetComponent<Button>().onClick.AddListener(() => AddIngredientToMix(ingredient));
+            Navigation noNav = new Navigation();
+            noNav.mode = Navigation.Mode.None;
+            newButton.GetComponent<Button>().navigation = noNav;
         }
     }
 
@@ -68,6 +71,9 @@ public class IngredientMixingMenu : Menu
             uiButton.SetFireType(lightType);
 
             newButton.GetComponent<Button>().onClick.AddListener(() => playerLantern.changeLightType(lightType));
+            Navigation noNav = new Navigation();
+            noNav.mode = Navigation.Mode.None;
+            newButton.GetComponent<Button>().navigation = noNav;
         }
         if (grenadesUnlocked) { UnlockGrenadeType(lightType); }
     }
@@ -83,6 +89,9 @@ public class IngredientMixingMenu : Menu
             uiButton.SetFireType(lightType);
 
             newButton.GetComponent<Button>().onClick.AddListener(() => playerLantern.ChangeGrenadeLightType(lightType));
+            Navigation noNav = new Navigation();
+            noNav.mode = Navigation.Mode.None;
+            newButton.GetComponent<Button>().navigation = noNav;
         }
     }
 
@@ -114,7 +123,7 @@ public class IngredientMixingMenu : Menu
         Destroy(button.gameObject);
     }
 
-    public void attemptToCreateFuel()
+    public void AttemptToCreateFuel()
     {
         foreach(Recipe recipe in recipes)
         {
@@ -131,9 +140,19 @@ public class IngredientMixingMenu : Menu
                 if (matching == true)
                 {
                     UnlockLight(recipe.type);
+                    Clear();
                     return;
                 }
             }
+        }
+    }
+
+    public override void Clear()
+    {
+        currentIngredients.Clear();
+        foreach(Transform child in currentIngredientsGrid.transform)
+        {
+            Destroy(child.gameObject);
         }
     }
 

@@ -31,7 +31,10 @@ public class PauseMenuManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.F))
             {
-                if (delayTimer > 0.1f)CloseMenu();
+                if (delayTimer > 0.1f)
+                { 
+                    CloseMenu(); 
+                }
             }
             delayTimer += Time.unscaledDeltaTime;
         }
