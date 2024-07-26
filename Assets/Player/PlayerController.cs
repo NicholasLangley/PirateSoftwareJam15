@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
 
     Camera camera;
     [SerializeField]
-    public float minCameraX, maxCameraX, minCameraY, maxCameraY, cameraYOffset;
+    public float minCameraX, maxCameraX, minCameraY, maxCameraY, cameraYOffset, cameraSize;
 
     List<IngredientObject> unlockedIngredients;
     [SerializeField]
@@ -78,6 +78,8 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
     LightSource lantern;
 
     public int touchingDivineLight;
+
+    public Vector3 respawnPosition;
 void Awake()
     {
         _StateMachine = new StateMachine();
@@ -117,7 +119,8 @@ void Awake()
 
     public void Kill()
     {
-        GameObject.Destroy(gameObject);
+        Respawn();
+        //GameObject.Destroy(gameObject);
     }
 
     #endregion
@@ -145,10 +148,12 @@ void Awake()
         destPos.x = Mathf.Clamp(transform.position.x, minCameraX, maxCameraX);
         destPos.y = Mathf.Clamp(transform.position.y + cameraYOffset, minCameraY, maxCameraY);
 
-        float decay = 25;
+        float decay = 20;
         Vector3 newPos = camera.transform.position;
         newPos.x = expDecay(newPos.x, destPos.x, decay, Time.deltaTime);
         newPos.y = expDecay(newPos.y, destPos.y, decay, Time.deltaTime);
+
+        camera.orthographicSize = expDecay(camera.orthographicSize, cameraSize, 5, Time.deltaTime);
 
         camera.transform.position = newPos;
     }
@@ -257,7 +262,7 @@ void Awake()
 
     public void Jump()
     {
-        _currentYSpeed = _intialJumpVelocity + Mathf.Abs(_currentXSpeed) / _maxXSpeed * _intialJumpVelocity / 6.0f;
+        _currentYSpeed = _intialJumpVelocity;// + Mathf.Abs(_currentXSpeed) / _maxXSpeed * _intialJumpVelocity / 6.0f;
         _isJumping = true;
     }
 
@@ -351,6 +356,9 @@ void Awake()
         }
     }
 
-    
+    public void Respawn()
+    {
+        transform.position = respawnPosition;
+    }
 
 }

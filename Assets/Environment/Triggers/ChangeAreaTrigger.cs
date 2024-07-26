@@ -12,6 +12,8 @@ public class ChangeAreaTrigger : Trigger
 
     [SerializeField]
     Vector2 minCamera, maxCamera;
+    [SerializeField]
+    float cameraSize;
 
     public override void TriggerEffects(PlayerController player)
     {
@@ -27,7 +29,12 @@ public class ChangeAreaTrigger : Trigger
         player.maxCameraX = maxCamera.x;
         player.minCameraY = minCamera.y;
         player.maxCameraY = maxCamera.y;
+        player.cameraSize = cameraSize;
         playerLantern.UpdateActiveTilemaps();
+
+        Vector3 respawnPos = transform.position;
+        respawnPos.z = player.transform.position.z;
+        player.respawnPosition = respawnPos;
 
         gameObject.SetActive(false);
     }

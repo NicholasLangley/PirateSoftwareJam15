@@ -65,6 +65,9 @@ public class LightSource : MonoBehaviour
     float growthTimer;
     [SerializeField]
     LightGrenade grenadePrefab;
+    [SerializeField]
+    float grenadeCooldown;
+    float grenadeTimer;
 
     [Header("Silver Background HACK")]
     [SerializeField]
@@ -79,6 +82,7 @@ public class LightSource : MonoBehaviour
         currentGrenadeLightType = LIGHT_TYPE.none;
         UpdateActiveTilemaps();
         growthTimer = 0;
+        grenadeTimer = 0;
 
 
         SpawnCollider();
@@ -90,6 +94,7 @@ public class LightSource : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        grenadeTimer += Time.deltaTime;
         //DEBUG keys
         if (lightOwner == LIGHT_OWNER.player)
         {
@@ -417,9 +422,10 @@ public class LightSource : MonoBehaviour
 
     void SpawnExplosive()
     {
-        if (currentGrenadeLightType == LIGHT_TYPE.none || Time.deltaTime == 0) { return; }
+        if (currentGrenadeLightType == LIGHT_TYPE.none || Time.deltaTime == 0 || grenadeTimer < grenadeCooldown) { return; }
         LightGrenade grenade = Instantiate<LightGrenade>(grenadePrefab);
         grenade.transform.position = transform.position;
         grenade.Initialize(aimDirection, currentGrenadeLightType);
+        grenadeTimer = 0;
     }
 }
