@@ -5,11 +5,11 @@ using UnityEngine;
 public class HeadController : MonoBehaviour
 {
     [SerializeField]
-    Segment head, tail;
+    public Segment head, tail;
 
     [Header("FABRIK")]
     [SerializeField]
-    bool isLimb, isRightLimb;
+    bool isLimb, isRightLimb, otherwiseHasAnchor;
     [SerializeField]
     float limbReachLength;
     Vector3 fabrikStart, fabrikGoal;
@@ -37,6 +37,7 @@ public class HeadController : MonoBehaviour
     GameObject leftEye, rightEye;
 
     public Vector3 headPosition;
+    public Vector3 anchorPos;
 
     // Start is called before the first frame update
     void Start()
@@ -98,11 +99,12 @@ public class HeadController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!isLimb)
+        if (!isLimb)
         {
-            head.Constrain(headPosition);
+            if (otherwiseHasAnchor) { FABRIK_non_limb(headPosition); }
+            else { head.Constrain(headPosition); }
 
-            MoveEyes();
+            if (leftEye != null && rightEye != null) { MoveEyes(); }
         }
         else
         {
@@ -164,6 +166,12 @@ public class HeadController : MonoBehaviour
         //check for distance
         Vector3 distanceFromGoal = fabrikGoal - head.transform.position;
         if (distanceFromGoal.magnitude > limbReachLength && lerpTimer > lerpDuration) { updateGoalPosition(); }
+    }
+
+    void FABRIK_non_limb(Vector3 pos)
+    {
+        head.Constrain(pos);
+        tail.ReverseConstrain(anchorPos);
     }
 
     public void updateGoalPosition()

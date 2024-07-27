@@ -55,7 +55,7 @@ public class LightSource : MonoBehaviour
     [SerializeField]
     LIGHT_OWNER lightOwner;
     [SerializeField]
-    Vector3 aimDirection;
+    public Vector3 aimDirection;
 
     [Header("LightGrenade")]
     [SerializeField]
@@ -74,6 +74,8 @@ public class LightSource : MonoBehaviour
     TilemapRenderer magicalBackground, magicalGround;
 
     int frameCount;
+    [SerializeField]
+    Transform spriteAnchor;
 
     // Start is called before the first frame update
     void Start()
@@ -129,7 +131,22 @@ public class LightSource : MonoBehaviour
             }
             else
             {
-                if (frameCount % 4 == 0) { DrawLightMesh(); frameCount = 0; }
+                if (lightOwner == LIGHT_OWNER.player)
+                {
+                    CalculateAimDirection();
+                }
+                if (lightOwner != LIGHT_OWNER.grenade)
+                {
+                    //rotate spotlight to match
+                    Quaternion rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
+
+                    //coneLight.transform.rotation = rotation;
+                    //silverConeLight.transform.rotation = rotation;
+                    //highlightConeLight.transform.rotation = rotation;
+
+                    if (spriteAnchor != null) { spriteAnchor.rotation = rotation; }
+                }
+                    if (frameCount % 10 == 0) { DrawLightMesh(); frameCount = 0; }
             }
         }
     }
@@ -188,11 +205,6 @@ public class LightSource : MonoBehaviour
             rays.Add(newRay);
         }
 
-        if (lightOwner == LIGHT_OWNER.player)
-        {
-            CalculateAimDirection();
-        }
-
         Vector3 maxAimConeDirection = Quaternion.Euler(0, 0, LightConeAngle / 2.0f) * aimDirection;
         Vector3 minAimConeDirection = Quaternion.Euler(0, 0, -LightConeAngle / 2.0f) * aimDirection;
 
@@ -201,13 +213,6 @@ public class LightSource : MonoBehaviour
 
         if (lightOwner != LIGHT_OWNER.grenade)
         {
-           
-            //rotate spotlight to match
-
-            coneLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
-            silverConeLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
-            highlightConeLight.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
-
             rays.Add(maxConeRay);
             rays.Add(minConeRay);
 
@@ -317,7 +322,8 @@ public class LightSource : MonoBehaviour
         if (lightOwner != LIGHT_OWNER.grenade) 
         {
             coneLight.enabled = true;
-            silverConeLight.enabled = false; 
+            silverConeLight.enabled = false;
+            coneLight.blendStyleIndex = 0;
         }
 
         lightCollider.gameObject.tag = "Light";
@@ -327,6 +333,7 @@ public class LightSource : MonoBehaviour
             SpawnShadowFire();
             shadowFire.SetActive(false);
         }
+        
 
         switch (type)
         {
@@ -343,6 +350,7 @@ public class LightSource : MonoBehaviour
                 break;
             case LIGHT_TYPE.red:
                 currentLightType = LIGHT_TYPE.red;
+                coneLight.blendStyleIndex = 1;
                 lightCollider.gameObject.tag = "RedLight";
                 break;
             case LIGHT_TYPE.black:
