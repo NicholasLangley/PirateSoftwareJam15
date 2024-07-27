@@ -17,11 +17,16 @@ public class LostWoodsManager : MonoBehaviour
     GameObject triggerToDisable;
 
     int currentDirectionIndex;
+    int resetCount;
+
+    [SerializeField]
+    GameObject note, ingredient;
 
     // Start is called before the first frame update
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
+        resetCount = -1;
         Reset();
     }
 
@@ -36,6 +41,12 @@ public class LostWoodsManager : MonoBehaviour
         triggerToDisable.SetActive(true);
         currentDirectionIndex = 0;
         DisplayArrow(solution[currentDirectionIndex]);
+        resetCount++;
+        if(resetCount == 3)
+        {
+            note.SetActive(true);
+            ingredient.SetActive(true);
+        }
     }
 
     void DisplayArrow(LostWoodsDirection dir)
@@ -62,7 +73,6 @@ public class LostWoodsManager : MonoBehaviour
             DisplayArrow(solution[currentDirectionIndex]);
             if (currentDirectionIndex == solution.Count - 1)
             {
-                Debug.Log("why");
                 triggerToDisable.SetActive(false);
             }
         }

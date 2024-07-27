@@ -10,12 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 51c40f3cd6885424491936d038f62193, type: 3}
-  m_Name: silverRecipe
+  m_Name: EarthFireRecipe
   m_EditorClassIdentifier: 
-  type: 2
+  type: 0
   ingredientOrder:
   - {fileID: 11400000, guid: fa3c4a6abb66b174e9fe3d715d0d092c, type: 2}
   - {fileID: 11400000, guid: f0ec4301b69e69448aadfd2b1e376a0e, type: 2}
-  - {fileID: 11400000, guid: 3d3addfa55c551f41a402a4b83d80223, type: 2}
-  - {fileID: 11400000, guid: 3d3addfa55c551f41a402a4b83d80223, type: 2}
-  - {fileID: 11400000, guid: 3d3addfa55c551f41a402a4b83d80223, type: 2}
