@@ -359,6 +359,7 @@ void Awake()
     public void Respawn()
     {
         transform.position = respawnPosition;
+        lantern.changeLightType(LightSource.LIGHT_TYPE.magical);
     }
 
 }

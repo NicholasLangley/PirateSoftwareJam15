@@ -7,6 +7,11 @@ public class TeleportTrigger : Trigger
     [SerializeField]
     Vector3 destination;
 
+    [SerializeField]
+    LostWoodsManager lwManager;
+    [SerializeField]
+    LostWoodsManager.LostWoodsDirection dir;
+
     public override void TriggerEffects(PlayerController player)
     {
         Debug.Log("TP");
@@ -19,7 +24,10 @@ public class TeleportTrigger : Trigger
         newCameraPos.z = Camera.main.transform.position.z;
         Camera.main.transform.position = newCameraPos;
 
-        gameObject.SetActive(false);
+        if(lwManager != null)
+        {
+            lwManager.EnterDirection(dir);
+        }
     }
 
     // Start is called before the first frame update
