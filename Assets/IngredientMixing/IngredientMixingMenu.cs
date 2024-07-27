@@ -32,9 +32,11 @@ public class IngredientMixingMenu : Menu
         currentIngredients = new List<IngredientObject>();
 
         unlockedLightTypes = new List<LightSource.LIGHT_TYPE>();
-        //UnlockLight(LightSource.LIGHT_TYPE.magical);
+        //UnlockLight(LightSource.LIGHT_TYPE.black);
+        
 
         unlockedGrenadeTypes = new List<LightSource.LIGHT_TYPE>();
+        //UnlockGrenades();
     }
 
     // Update is called once per frame

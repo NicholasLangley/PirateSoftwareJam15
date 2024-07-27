@@ -181,7 +181,7 @@ void Awake()
         {
             Vector2 rayOrigin = new Vector2(transform.position.x + i * 0.9f * ( playerWidth / 2.0f ), transform.position.y);
 
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, (playerHeight / 2.0f) + 0.02f, _groundLayers);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, (playerHeight / 2.0f) + 0.1f, _groundLayers);
             if (hit.collider != null)
             {
                 _isGrounded = true;
@@ -233,7 +233,7 @@ void Awake()
         int rayCount = 3;
         for (int i = -1; i < rayCount - 1; i++)
         {
-            Vector2 rayOrigin = new Vector2(transform.position.x + i * 0.9f * (playerWidth / 2.0f), transform.position.y);
+            Vector2 rayOrigin = new Vector2(transform.position.x + i * 0.7f * (playerWidth / 2.0f), transform.position.y);
 
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up, (playerHeight / 2.0f) + 0.02f, _groundLayers);
             if (hit.collider != null)
@@ -338,7 +338,7 @@ void Awake()
             }
             else
             {
-                Kill();
+                if (lantern.currentLightType != LightSource.LIGHT_TYPE.black) { Kill(); }
             }
         }
         

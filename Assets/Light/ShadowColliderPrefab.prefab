@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 4189867837855185389}
   - component: {fileID: 7375100433427431261}
   - component: {fileID: 8954807263528316406}
-  m_Layer: 0
+  - component: {fileID: 7031803520869460521}
+  m_Layer: 14
   m_Name: ShadowColliderPrefab
-  m_TagString: Untagged
+  m_TagString: BlackFire
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26,9 +27,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1233584382280088104}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -92,7 +93,70 @@ MonoBehaviour:
   - {x: -0.42945823, y: -0.6356996, z: -0.000000054948032}
   m_ShapePathHash: 854874109
   m_Mesh: {fileID: 0}
-  m_InstanceId: -148368
+  m_InstanceId: -31782
   m_LocalBounds:
     m_Center: {x: 0.0040236115, y: 0.49207246, z: 0}
     m_Extent: {x: 0.915528, y: 1.2105113, z: 0}
+--- !u!60 &7031803520869460521
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1233584382280088104}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.8546062, y: 0.7399545}
+      - {x: 0.7092117, y: 1.0043093}
+      - {x: 0.5136594, y: 1.280697}
+      - {x: 0.007362365, y: 1.7029189}
+      - {x: -0.3270345, y: 1.4333719}
+      - {x: -0.58543664, y: 1.1459948}
+      - {x: -0.8261876, y: 0.69807076}
+      - {x: -0.89217395, y: 0.40838248}
+      - {x: -0.91532075, y: 0.1027693}
+      - {x: -0.76167566, y: -0.29022673}
+      - {x: -0.6685916, y: -0.45582968}
+      - {x: -0.5362595, y: -0.5624435}
+      - {x: -0.24505663, y: -0.69719774}
+      - {x: 0.23889765, y: -0.7123217}
+      - {x: 0.40009135, y: -0.6286869}
+      - {x: 0.63597494, y: -0.41750497}
+      - {x: 0.8436689, y: -0.08565375}
+      - {x: 0.92161244, y: 0.36053997}
+  m_UseDelaunayMesh: 0

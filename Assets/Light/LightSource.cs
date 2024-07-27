@@ -32,7 +32,7 @@ public class LightSource : MonoBehaviour
     float LightConeAngle;
 
     [SerializeField]
-    Light2D circleLight, coneLight, silverCircleLight, silverConeLight, highlightCircleLight, highlightConeLight, mundaneCircle, mundaneCone;
+    Light2D circleLight, coneLight, silverCircleLight, silverConeLight, highlightCircleLight, highlightConeLight;
     [SerializeField]
     LightColors lightColors, highlightColors;
 
@@ -73,6 +73,8 @@ public class LightSource : MonoBehaviour
     [SerializeField]
     TilemapRenderer magicalBackground, magicalGround;
 
+    int frameCount;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -84,6 +86,7 @@ public class LightSource : MonoBehaviour
         growthTimer = 0;
         grenadeTimer = 0;
 
+        frameCount = 0;
 
         SpawnCollider();
         getGroundMesh();
@@ -94,6 +97,7 @@ public class LightSource : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        frameCount++;
         grenadeTimer += Time.deltaTime;
         //DEBUG keys
         if (lightOwner == LIGHT_OWNER.player)
@@ -125,10 +129,7 @@ public class LightSource : MonoBehaviour
             }
             else
             {
-                if(lightOwner != LIGHT_OWNER.none)
-                {
-                    DrawLightMesh();
-                }
+                if (frameCount % 4 == 0) { DrawLightMesh(); frameCount = 0; }
             }
         }
     }
