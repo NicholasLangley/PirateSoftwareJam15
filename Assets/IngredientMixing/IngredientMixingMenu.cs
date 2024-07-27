@@ -32,7 +32,7 @@ public class IngredientMixingMenu : Menu
         currentIngredients = new List<IngredientObject>();
 
         unlockedLightTypes = new List<LightSource.LIGHT_TYPE>();
-        UnlockLight(LightSource.LIGHT_TYPE.magical);
+        //UnlockLight(LightSource.LIGHT_TYPE.magical);
 
         unlockedGrenadeTypes = new List<LightSource.LIGHT_TYPE>();
     }
