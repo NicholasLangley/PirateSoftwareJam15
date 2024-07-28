@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable, IFallable//, IAnimateable
 {
@@ -80,6 +81,16 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
     public int touchingDivineLight;
 
     public Vector3 respawnPosition;
+    public bool isDead;
+
+    [SerializeField]
+    Image deathFadeImage;
+    [SerializeField]
+    float deathFadeDuration;
+    float deathFadeTimer, fadeInTimer;
+
+
+
 void Awake()
     {
         _StateMachine = new StateMachine();
@@ -105,12 +116,17 @@ void Awake()
 
         unlockedIngredients = new List<IngredientObject>();
         touchingDivineLight = 0;
+
+        isDead = false;
+        fadeInTimer = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
         _StateMachine.currentState.FrameUpdate();
+        if (isDead) { DeathFade(); }
+        else if (fadeInTimer < deathFadeTimer) { FadeIn(); }
     }
 
 
@@ -119,8 +135,10 @@ void Awake()
 
     public void Kill()
     {
-        Respawn();
-        //GameObject.Destroy(gameObject);
+        if (isDead) { return; }
+        lantern.Kill();
+        isDead = true;
+        deathFadeTimer = 0;
     }
 
     #endregion
@@ -131,8 +149,11 @@ void Awake()
     //Interface implementations
     public void Move()
     {
+
         CheckIfGrounded();
         CheckForWallCollision();
+
+        //if (isDead) { _currentXSpeed = expDecay(_currentXSpeed, 0f, 15, Time.deltaTime); }
 
         Vector3 nextPos = transform.position;
         nextPos.x += _currentXSpeed * Time.deltaTime;
@@ -262,6 +283,7 @@ void Awake()
 
     public void Jump()
     {
+        if (isDead) { return; }
         _currentYSpeed = _intialJumpVelocity;// + Mathf.Abs(_currentXSpeed) / _maxXSpeed * _intialJumpVelocity / 6.0f;
         _isJumping = true;
     }
@@ -358,8 +380,28 @@ void Awake()
 
     public void Respawn()
     {
+        if (lantern.currentLightType == LightSource.LIGHT_TYPE.red) { lantern.changeLightType(LightSource.LIGHT_TYPE.magical); }
+        isDead = false;
         transform.position = respawnPosition;
-        lantern.changeLightType(LightSource.LIGHT_TYPE.magical);
+        lantern.Respawn();
+        fadeInTimer = -0.4f;
     }
 
+    void DeathFade()
+    {
+        deathFadeTimer += Time.deltaTime;
+        Color color = Color.black;
+        color.a = Mathf.Lerp(0, 1, deathFadeTimer / deathFadeDuration );
+        deathFadeImage.color = color;
+
+        if (deathFadeTimer > deathFadeDuration) { Respawn(); }
+    }
+
+    void FadeIn()
+    {
+        fadeInTimer += Time.deltaTime;
+        Color color = Color.black;
+        color.a = Mathf.Lerp(1, 0, fadeInTimer / deathFadeDuration);
+        deathFadeImage.color = color;
+    }
 }

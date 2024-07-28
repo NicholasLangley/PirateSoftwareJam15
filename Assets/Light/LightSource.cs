@@ -76,6 +76,10 @@ public class LightSource : MonoBehaviour
     int frameCount;
     [SerializeField]
     Transform spriteAnchor;
+    [SerializeField]
+    GameObject spriteBody;
+
+    public bool isDead;
 
     // Start is called before the first frame update
     void Start()
@@ -139,12 +143,12 @@ public class LightSource : MonoBehaviour
                 {
                     //rotate spotlight to match
                     Quaternion rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
-
+                    if (!isDead) { spriteBody.transform.localRotation = Quaternion.identity; }
                     //coneLight.transform.rotation = rotation;
                     //silverConeLight.transform.rotation = rotation;
                     //highlightConeLight.transform.rotation = rotation;
 
-                    if (spriteAnchor != null) { spriteAnchor.rotation = rotation; }
+                    if (spriteAnchor != null && !isDead) { spriteAnchor.rotation = rotation; }
                 }
                     if (frameCount % 10 == 0) { DrawLightMesh(); frameCount = 0; }
             }
@@ -367,7 +371,7 @@ public class LightSource : MonoBehaviour
                 break;
         }
         circleLight.color = lightColors.GetColor(type);
-        if (lightOwner != LIGHT_OWNER.grenade) { coneLight.color = lightColors.GetColor(type); }
+        if (lightOwner != LIGHT_OWNER.grenade) { coneLight.color = lightColors.GetColor(type); spriteBody.GetComponent<SpriteRenderer>().color = lightColors.GetColor(type); }
         highlightCircleLight.color = highlightColors.GetColor(type);
         if (lightOwner != LIGHT_OWNER.grenade) { highlightConeLight.color = highlightColors.GetColor(type); }
     }
@@ -436,5 +440,21 @@ public class LightSource : MonoBehaviour
         grenade.transform.position = transform.position;
         grenade.Initialize(aimDirection, currentGrenadeLightType);
         grenadeTimer = 0;
+    }
+
+    public void Kill()
+    {
+        isDead = true;
+        spriteBody.GetComponent<Rigidbody2D>().gravityScale = 1f;
+        spriteBody.GetComponent<BoxCollider2D>().enabled = true;
+    }
+
+    public void Respawn()
+    {
+        isDead = false;
+        spriteBody.GetComponent<Rigidbody2D>().gravityScale = 0;
+        spriteBody.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        spriteBody.transform.localPosition = new Vector3(0, 0.266f, 0);
+        spriteBody.GetComponent<BoxCollider2D>().enabled = false;
     }
 }

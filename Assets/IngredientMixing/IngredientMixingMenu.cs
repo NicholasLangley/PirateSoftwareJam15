@@ -53,6 +53,7 @@ public class IngredientMixingMenu : Menu
 
             GameObject newButton = Instantiate(IngredientUIButtonPrefab, unlockedIngredientGrid.transform);
             IngredientUIButton uiButton = newButton.GetComponent<IngredientUIButton>();
+            uiButton.x.enabled = false;
             uiButton.SetIngredient(ingredient);
 
             newButton.GetComponent<Button>().onClick.AddListener(() => AddIngredientToMix(ingredient));

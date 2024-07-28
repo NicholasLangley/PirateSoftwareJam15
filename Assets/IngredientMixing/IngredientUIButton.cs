@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class IngredientUIButton : MonoBehaviour
 {
     public IngredientObject ingredient;
+    public Image x;
 
     // Start is called before the first frame update
     void OnEnable()

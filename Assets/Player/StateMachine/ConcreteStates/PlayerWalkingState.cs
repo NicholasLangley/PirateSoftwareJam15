@@ -47,7 +47,7 @@ public class PlayerWalkingState : State
         float accelertionAmount = _player._xAcceleration * Time.deltaTime;
         float horizontalAccel = Input.GetAxisRaw("Horizontal") * accelertionAmount;
         //accelerate
-        if (horizontalAccel != 0) { _player._currentXSpeed = Mathf.Clamp(_player._currentXSpeed += horizontalAccel, -_player._maxXSpeed, _player._maxXSpeed); }
+        if (horizontalAccel != 0 && !_player.isDead) { _player._currentXSpeed = Mathf.Clamp(_player._currentXSpeed += horizontalAccel, -_player._maxXSpeed, _player._maxXSpeed); }
         //decelerate
         else
         {
