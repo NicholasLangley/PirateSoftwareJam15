@@ -143,7 +143,7 @@ public class LightSource : MonoBehaviour
                 {
                     //rotate spotlight to match
                     Quaternion rotation = Quaternion.Euler(new Vector3(0, 0, Vector3.SignedAngle(aimDirection, Vector3.up, Vector3.back)));
-                    if (!isDead) { spriteBody.transform.localRotation = Quaternion.identity; }
+                    if (!isDead && spriteBody != null) { spriteBody.transform.localRotation = Quaternion.identity; }
                     //coneLight.transform.rotation = rotation;
                     //silverConeLight.transform.rotation = rotation;
                     //highlightConeLight.transform.rotation = rotation;
@@ -354,7 +354,7 @@ public class LightSource : MonoBehaviour
                 break;
             case LIGHT_TYPE.red:
                 currentLightType = LIGHT_TYPE.red;
-                coneLight.blendStyleIndex = 1;
+                if (lightOwner != LIGHT_OWNER.grenade) { coneLight.blendStyleIndex = 1; }
                 lightCollider.gameObject.tag = "RedLight";
                 break;
             case LIGHT_TYPE.black:
@@ -371,7 +371,7 @@ public class LightSource : MonoBehaviour
                 break;
         }
         circleLight.color = lightColors.GetColor(type);
-        if (lightOwner != LIGHT_OWNER.grenade) { coneLight.color = lightColors.GetColor(type); spriteBody.GetComponent<SpriteRenderer>().color = lightColors.GetColor(type); }
+        if (lightOwner != LIGHT_OWNER.grenade) { coneLight.color = lightColors.GetColor(type); if (spriteBody != null) { spriteBody.GetComponent<SpriteRenderer>().color = lightColors.GetColor(type); } }
         highlightCircleLight.color = highlightColors.GetColor(type);
         if (lightOwner != LIGHT_OWNER.grenade) { highlightConeLight.color = highlightColors.GetColor(type); }
     }
@@ -445,6 +445,7 @@ public class LightSource : MonoBehaviour
     public void Kill()
     {
         isDead = true;
+        if (spriteBody == null) { return; }
         spriteBody.GetComponent<Rigidbody2D>().gravityScale = 1f;
         spriteBody.GetComponent<BoxCollider2D>().enabled = true;
     }
@@ -452,6 +453,7 @@ public class LightSource : MonoBehaviour
     public void Respawn()
     {
         isDead = false;
+        if (spriteBody == null) { return; }
         spriteBody.GetComponent<Rigidbody2D>().gravityScale = 0;
         spriteBody.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         spriteBody.transform.localPosition = new Vector3(0, 0.266f, 0);

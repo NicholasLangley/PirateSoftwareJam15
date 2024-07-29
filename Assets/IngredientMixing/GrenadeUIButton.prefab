@@ -135,8 +135,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lightType: 0
   mundaneSprite: {fileID: 21300000, guid: 3a1dfea45d6a38b4988c1226f7d178a7, type: 3}
-  magicalSprite: {fileID: 21300000, guid: 73fcb0161f5bfd042beb93bfc9e7b249, type: 3}
-  silverSprite: {fileID: 21300000, guid: d9f744c875a3f3a479c22d19be45e846, type: 3}
-  redSprite: {fileID: 21300000, guid: 7006e2ba2efed6c49bfcf859599002c5, type: 3}
-  blackSprite: {fileID: 21300000, guid: 341f43c2c0d048c40910523b8685558b, type: 3}
-  divineSprite: {fileID: 21300000, guid: dea263a6cec57584fa77f6991452ba77, type: 3}
+  magicalSprite: {fileID: 21300000, guid: 769d364fa1b31be489cd9890b0e2e434, type: 3}
+  silverSprite: {fileID: 21300000, guid: 074d71b7a1027d74d98ae70d7b324bd2, type: 3}
+  redSprite: {fileID: 21300000, guid: 184da35a19640af4db81e2825a8b9417, type: 3}
+  blackSprite: {fileID: 21300000, guid: ea01923a07e42174bbf512ac40b307a4, type: 3}
+  divineSprite: {fileID: 21300000, guid: ba73e5960e8fbe8429f90c62e93a4501, type: 3}
