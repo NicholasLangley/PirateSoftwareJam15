@@ -26,7 +26,7 @@ public class FinishAlter : MonoBehaviour
     {
         Vector3 vectorFromPlayer = transform.position - player.position;
         vectorFromPlayer.z = 0;
-        if (vectorFromPlayer.magnitude < 3 && !gameComplete)
+        if (vectorFromPlayer.magnitude < 5 && !gameComplete)
         {
             if (collision.gameObject.CompareTag("RedLight"))
             {

@@ -16,5 +16,3 @@ MonoBehaviour:
   ingredientOrder:
   - {fileID: 11400000, guid: 7e4124ed46e506447b0d085e45ee7889, type: 2}
   - {fileID: 11400000, guid: d9a65df662c8e9643a2533b27e6c5456, type: 2}
-  - {fileID: 11400000, guid: 7e4124ed46e506447b0d085e45ee7889, type: 2}
-  - {fileID: 11400000, guid: d9a65df662c8e9643a2533b27e6c5456, type: 2}

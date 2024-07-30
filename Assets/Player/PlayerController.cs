@@ -358,7 +358,7 @@ void Awake()
     {
         if (collision.gameObject.CompareTag("RedLight"))
         {
-            if (touchingDivineLight > 0 || lantern.currentLightType == LightSource.LIGHT_TYPE.divine)
+            if (touchingDivineLight > 0 || lantern.currentLightType == LightSource.LIGHT_TYPE.divine && !gameOver)
             {
                 gameOverManager.playNeutralEnd();
                 gameOver = true;

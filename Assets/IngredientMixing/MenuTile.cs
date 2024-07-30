@@ -44,7 +44,7 @@ public class MenuTile : MonoBehaviour
     {
         menu.isActive = false;
         startTransition(onScreenPos, bottomOffScreenPos);
-        menu.Clear();
+        //menu.Clear();
     }
 
     void startTransition(Vector3 start, Vector3 dest)

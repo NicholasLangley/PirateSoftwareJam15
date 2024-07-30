@@ -110,6 +110,7 @@ public class IngredientMixingMenu : Menu
 
     public void AddIngredientToMix(IngredientObject ingredient)
     {
+        if (currentIngredients.Count > 12) { return; }
         currentIngredients.Add(ingredient);
 
         GameObject newButton = Instantiate(IngredientUIButtonPrefab, currentIngredientsGrid.transform);

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51c40f3cd6885424491936d038f62193, type: 3}
+  m_Name: DIVINITY
+  m_EditorClassIdentifier: 
+  type: 5
+  ingredientOrder:
+  - {fileID: 11400000, guid: e638b80cc2e078b42b641947e62e2059, type: 2}
+  - {fileID: 11400000, guid: fa3c4a6abb66b174e9fe3d715d0d092c, type: 2}
+  - {fileID: 11400000, guid: f0ec4301b69e69448aadfd2b1e376a0e, type: 2}
+  - {fileID: 11400000, guid: d9a65df662c8e9643a2533b27e6c5456, type: 2}
+  - {fileID: 11400000, guid: 7e4124ed46e506447b0d085e45ee7889, type: 2}
+  - {fileID: 11400000, guid: d9a65df662c8e9643a2533b27e6c5456, type: 2}
+  - {fileID: 11400000, guid: 7e4124ed46e506447b0d085e45ee7889, type: 2}
+  - {fileID: 11400000, guid: 3d3addfa55c551f41a402a4b83d80223, type: 2}
+  - {fileID: 11400000, guid: 3d3addfa55c551f41a402a4b83d80223, type: 2}
+  - {fileID: 11400000, guid: 3d3addfa55c551f41a402a4b83d80223, type: 2}
+  - {fileID: 11400000, guid: e638b80cc2e078b42b641947e62e2059, type: 2}

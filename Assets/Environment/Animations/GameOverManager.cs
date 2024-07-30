@@ -51,6 +51,7 @@ public class GameOverManager : MonoBehaviour
         goodEnd.SetActive(true);
         goalColor = goodColor;
         player.gameOver = true;
+        fadeTimer = 0;
     }
 
     public void PlayBadEnd()
@@ -58,6 +59,7 @@ public class GameOverManager : MonoBehaviour
         badEnd.SetActive(true);
         goalColor = badColor;
         player.gameOver = true;
+        fadeTimer = 0;
     }
 
     public void playNeutralEnd()
@@ -65,12 +67,13 @@ public class GameOverManager : MonoBehaviour
         player.gameOver = true;
         goalColor = neutralColor;
         BeginCreditFade();
+        fadeTimer = -3f;
     }
 
     public void BeginCreditFade()
     {
         fading = true;
-        fadeTimer = 0;
+        
 
         Color32 startColor = goalColor;
         goalColor.a = 0;
