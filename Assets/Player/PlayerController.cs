@@ -89,7 +89,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
     float deathFadeDuration;
     float deathFadeTimer, fadeInTimer;
 
-
+    public bool gameOver;
+    [SerializeField]
+    GameOverManager gameOverManager;
 
 void Awake()
     {
@@ -119,14 +121,16 @@ void Awake()
 
         isDead = false;
         fadeInTimer = 0;
+
+        gameOver = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         _StateMachine.currentState.FrameUpdate();
-        if (isDead) { DeathFade(); }
-        else if (fadeInTimer < deathFadeTimer) { FadeIn(); }
+        if (isDead && !gameOver) { DeathFade(); }
+        else if (fadeInTimer < deathFadeTimer && !gameOver) { FadeIn(); }
     }
 
 
@@ -356,7 +360,9 @@ void Awake()
         {
             if (touchingDivineLight > 0 || lantern.currentLightType == LightSource.LIGHT_TYPE.divine)
             {
-                Debug.Log("NeutralEnd");
+                gameOverManager.playNeutralEnd();
+                gameOver = true;
+                Kill();
             }
             else
             {

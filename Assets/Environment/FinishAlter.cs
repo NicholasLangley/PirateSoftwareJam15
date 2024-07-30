@@ -6,6 +6,8 @@ public class FinishAlter : MonoBehaviour
 {
     Transform player;
 
+    [SerializeField]
+    GameOverManager gameOverManager;
     bool gameComplete;
     // Start is called before the first frame update
     void Start()
@@ -39,13 +41,13 @@ public class FinishAlter : MonoBehaviour
 
     void BadEnding()
     {
-        Debug.Log("BAD END");
+        gameOverManager.PlayBadEnd();
         gameComplete = true;
     }
 
     void GoodEnding()
     {
-        Debug.Log("GOOD END");
+        gameOverManager.PlayGoodEnd();
         gameComplete = true;
     }
 

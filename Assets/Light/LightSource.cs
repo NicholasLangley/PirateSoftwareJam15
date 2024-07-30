@@ -368,6 +368,7 @@ public class LightSource : MonoBehaviour
             case LIGHT_TYPE.divine:
                 lightCollider.gameObject.tag = "DivineLight";
                 currentLightType = LIGHT_TYPE.divine;
+                if (lightOwner != LIGHT_OWNER.grenade) { coneLight.blendStyleIndex = 1; }
                 break;
         }
         circleLight.color = lightColors.GetColor(type);
