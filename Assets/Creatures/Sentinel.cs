@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class Sentinel : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class Sentinel : MonoBehaviour
 
     [SerializeField]
     LightSource lantern;
+
+    [SerializeField]
+    List<Light2D> bodyLights;
 
     bool isAwake;
     // Start is called before the first frame update
@@ -54,8 +58,19 @@ public class Sentinel : MonoBehaviour
             if (player.transform.position.x - tailAnchorPos.x > -15)
             {
                 lantern.changeLightType(LightSource.LIGHT_TYPE.red);
+                foreach (Light2D light in bodyLights)
+                {
+                    light.color = new Color32(255, 32, 32, 255);
+                }
             }
-            else { lantern.changeLightType(LightSource.LIGHT_TYPE.silver); }
+            else 
+            { 
+                lantern.changeLightType(LightSource.LIGHT_TYPE.silver);
+                foreach (Light2D light in bodyLights)
+                {
+                    light.color = new Color32(200, 200, 200, 255);
+                }
+            }
 
             Vector3 aimDirection = player.transform.position - sentinalHead.head.transform.position;
             aimDirection.z = 0;
