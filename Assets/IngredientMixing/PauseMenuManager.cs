@@ -54,11 +54,11 @@ public class PauseMenuManager : MonoBehaviour
 
     public void OpenMenu(MenuTile menu)
     {
-        Time.timeScale = 0f;
         menu.ArriveFromBottom();
         paused = true;
         currentTile = menu;
         delayTimer = 0f;
+        Time.timeScale = 0f;
     }
 
     public void CloseMenu()

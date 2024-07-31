@@ -17,17 +17,20 @@ public class AlchemistNote : MonoBehaviour
     float timer, floatingTimer, startingYValue;
     [SerializeField]
     float growthTime;
+    float readDelay;
     // Start is called before the first frame update
     void Start()
     {
         isActive = false;
         startingYValue = transform.position.y;
         floatingTimer = 0;
+        readDelay = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
+        readDelay += Time.deltaTime;
         floatingTimer += Time.deltaTime;
         transform.position = new Vector3(transform.position.x, startingYValue + Mathf.Sin(floatingTimer * 2) * 0.05f, transform.position.z);
 
@@ -42,7 +45,7 @@ public class AlchemistNote : MonoBehaviour
             transform.localScale = new Vector3(scale, scale, 1);
         }
 
-        if (Input.GetKeyDown(KeyCode.F) && isActive && Time.timeScale > 0)
+        if (Input.GetKeyDown(KeyCode.F) && isActive && Time.timeScale > 0 && readDelay > 0.1f)
         {
             Read();
         }
@@ -50,6 +53,7 @@ public class AlchemistNote : MonoBehaviour
 
     public void Read()
     {
+        readDelay = 0;
         noteMenu.setText(text);
         menuManager.OpenMenu(menuManager.alchemistsNoteMenuTile);
     }

@@ -37,6 +37,8 @@ public class MenuTile : MonoBehaviour
 
     public void ArriveFromBottom()
     {
+        if (menu.isActive) { return; }
+        menu.isActive = true;
         startTransition(bottomOffScreenPos, onScreenPos);
     }
 
