@@ -93,6 +93,9 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
     [SerializeField]
     GameOverManager gameOverManager;
 
+    [SerializeField]
+    AudioSource deathSound;
+
 void Awake()
     {
         _StateMachine = new StateMachine();
@@ -144,6 +147,7 @@ void Awake()
         lantern.Kill();
         isDead = true;
         deathFadeTimer = -1;
+        deathSound.Play();
     }
 
     #endregion

@@ -23,6 +23,10 @@ public class Sentinel : MonoBehaviour
     [SerializeField]
     List<Light2D> bodyLights;
 
+    [SerializeField]
+    AudioSource angerSound;
+    bool angry;
+
     bool isAwake;
     // Start is called before the first frame update
     void Start()
@@ -30,6 +34,7 @@ public class Sentinel : MonoBehaviour
         isAwake = true;
         if (player == null) { player = GameObject.FindGameObjectWithTag("Player").transform; }
         bodyHead.anchorPos = tailAnchorPos;
+        angry = false;
     }
 
     // Update is called once per frame
@@ -62,6 +67,7 @@ public class Sentinel : MonoBehaviour
                 {
                     light.color = new Color32(255, 32, 32, 255);
                 }
+                Anger();
             }
             else 
             { 
@@ -70,6 +76,7 @@ public class Sentinel : MonoBehaviour
                 {
                     light.color = new Color32(200, 200, 200, 255);
                 }
+                angry = false;
             }
 
             Vector3 aimDirection = player.transform.position - sentinalHead.head.transform.position;
@@ -80,6 +87,12 @@ public class Sentinel : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.G))
         {
             isAwake = true;
+        }
+
+        void Anger()
+        {
+            if (!angry) { angerSound.Play(); }
+            angry = true;
         }
     }
 }

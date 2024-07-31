@@ -22,6 +22,9 @@ public class IngredientMixingMenu : Menu
     [SerializeField]
     LightSource playerLantern;
 
+    [SerializeField]
+    AudioSource clickSound, unlockSound;
+
     bool grenadesUnlocked;
 
     void Start()
@@ -57,9 +60,12 @@ public class IngredientMixingMenu : Menu
             uiButton.SetIngredient(ingredient);
 
             newButton.GetComponent<Button>().onClick.AddListener(() => AddIngredientToMix(ingredient));
+            newButton.GetComponent<Button>().onClick.AddListener(() => clickSound.Play());
             Navigation noNav = new Navigation();
             noNav.mode = Navigation.Mode.None;
             newButton.GetComponent<Button>().navigation = noNav;
+
+            unlockSound.Play();
         }
     }
 
@@ -74,9 +80,11 @@ public class IngredientMixingMenu : Menu
             uiButton.SetFireType(lightType);
 
             newButton.GetComponent<Button>().onClick.AddListener(() => playerLantern.changeLightType(lightType));
+            newButton.GetComponent<Button>().onClick.AddListener(() => clickSound.Play());
             Navigation noNav = new Navigation();
             noNav.mode = Navigation.Mode.None;
             newButton.GetComponent<Button>().navigation = noNav;
+            unlockSound.Play();
         }
         if (grenadesUnlocked) { UnlockGrenadeType(lightType); }
     }
@@ -92,6 +100,7 @@ public class IngredientMixingMenu : Menu
             uiButton.SetFireType(lightType);
 
             newButton.GetComponent<Button>().onClick.AddListener(() => playerLantern.ChangeGrenadeLightType(lightType));
+            newButton.GetComponent<Button>().onClick.AddListener(() => clickSound.Play());
             Navigation noNav = new Navigation();
             noNav.mode = Navigation.Mode.None;
             newButton.GetComponent<Button>().navigation = noNav;
@@ -106,6 +115,7 @@ public class IngredientMixingMenu : Menu
             UnlockGrenadeType(type);
         }
         playerLantern.ChangeGrenadeLightType(unlockedGrenadeTypes[0]);
+        unlockSound.Play();
     }
 
     public void AddIngredientToMix(IngredientObject ingredient)
@@ -118,6 +128,7 @@ public class IngredientMixingMenu : Menu
         uiButton.SetIngredient(ingredient);
 
         newButton.GetComponent<Button>().onClick.AddListener(() => RemoveIngredientFromMix(uiButton));
+        newButton.GetComponent<Button>().onClick.AddListener(() => clickSound.Play());
     }
 
     public void RemoveIngredientFromMix(IngredientUIButton button)

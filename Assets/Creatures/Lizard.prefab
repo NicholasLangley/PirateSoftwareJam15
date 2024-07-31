@@ -63,7 +63,7 @@ MonoBehaviour:
   isMeshType: 1
   hasOutline: 1
   meshColor: {r: 0.007843138, g: 0.2, b: 0.08235294, a: 1}
-  outlineColor: {r: 0, g: 0.21698111, b: 0.11101359, a: 1}
+  outlineColor: {r: 0, g: 0.07450981, b: 0.039215688, a: 1}
   meshFilter: {fileID: 4654047478920013468}
   bodyCollider: {fileID: 8524771847278457537}
   leftEye: {fileID: 0}
@@ -233,7 +233,7 @@ MonoBehaviour:
   isMeshType: 1
   hasOutline: 1
   meshColor: {r: 0.007843138, g: 0.2, b: 0.08235294, a: 1}
-  outlineColor: {r: 0, g: 0.21960784, b: 0.11372549, a: 1}
+  outlineColor: {r: 0, g: 0.07450981, b: 0.039215688, a: 1}
   meshFilter: {fileID: 8023797815238058285}
   bodyCollider: {fileID: 96343550969085018}
   leftEye: {fileID: 0}
@@ -1983,7 +1983,7 @@ MonoBehaviour:
   isMeshType: 1
   hasOutline: 1
   meshColor: {r: 0.007843138, g: 0.2, b: 0.08235294, a: 1}
-  outlineColor: {r: 0, g: 0.21960784, b: 0.11372549, a: 1}
+  outlineColor: {r: 0, g: 0.07450981, b: 0.039215688, a: 1}
   meshFilter: {fileID: 3272651049539735395}
   bodyCollider: {fileID: 2474350430016325307}
   leftEye: {fileID: 0}
@@ -2153,7 +2153,7 @@ MonoBehaviour:
   isMeshType: 1
   hasOutline: 1
   meshColor: {r: 0.007843138, g: 0.2, b: 0.08235294, a: 1}
-  outlineColor: {r: 0, g: 0.21960784, b: 0.11372549, a: 1}
+  outlineColor: {r: 0, g: 0.07450981, b: 0.039215688, a: 1}
   meshFilter: {fileID: 8091927635456747868}
   bodyCollider: {fileID: 5046204769526484307}
   leftEye: {fileID: 0}
