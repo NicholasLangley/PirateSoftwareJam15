@@ -10,7 +10,7 @@ public class PlayerJumpingState : State
 
     public override void EnterState()
     {
-        //_player.changeAnimation(PlayerController.PLAYER_ANIMATION.Jumping);
+        _player.changeAnimation(PlayerController.PLAYER_ANIMATION.Jumping);
         _player.Jump();
         _playerStateMachine.changeState(_player._playerAirborneState);
     }

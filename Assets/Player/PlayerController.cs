@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour, IDamageable, IMoveable, IJumpable
     [Header("Animator")]
     [SerializeField]
     Animator _animator;
-    public enum PLAYER_ANIMATION { Idle, Walking, Jumping, Falling, DyingRedLight, DyingCreature }
+    public enum PLAYER_ANIMATION { Idle, Walking, Jumping, Falling, Death }
     PLAYER_ANIMATION _currentAnimation = PLAYER_ANIMATION.Idle;
     [SerializeField]
     SpriteRenderer _renderer;
@@ -106,8 +106,8 @@ void Awake()
     void Start()
     {
 
-        //_currentAnimation = PLAYER_ANIMATION.Jumping;
-        //changeAnimation(PLAYER_ANIMATION.Idle);
+        _currentAnimation = PLAYER_ANIMATION.Jumping;
+        changeAnimation(PLAYER_ANIMATION.Idle);
 
         _currentXSpeed = 0;
         _currentYSpeed = 0;
@@ -140,9 +140,10 @@ void Awake()
     public void Kill()
     {
         if (isDead) { return; }
+        changeAnimation(PlayerController.PLAYER_ANIMATION.Death);
         lantern.Kill();
         isDead = true;
-        deathFadeTimer = 0;
+        deathFadeTimer = -1;
     }
 
     #endregion
@@ -156,8 +157,6 @@ void Awake()
 
         CheckIfGrounded();
         CheckForWallCollision();
-
-        //if (isDead) { _currentXSpeed = expDecay(_currentXSpeed, 0f, 15, Time.deltaTime); }
 
         Vector3 nextPos = transform.position;
         nextPos.x += _currentXSpeed * Time.deltaTime;
@@ -294,7 +293,7 @@ void Awake()
 
     #endregion
 
-    #region animationTriggers
+    //#region animationTriggers
 
     /*public enum ANIMATION_TRIGGER_TYPE { ATTACKING_FRAME, FINISHED_ATTACKING }
 
@@ -303,11 +302,12 @@ void Awake()
         _StateMachine.currentState.AnimationTriggerEvent(animationTriggerType);
     }
 
-    #endregion
+    #endregion*/
 
     #region animations
     public void changeAnimation(PLAYER_ANIMATION nextAnimation)
     {
+        if (isDead) { return; }
         if (_currentAnimation == nextAnimation) { return; }
 
         _animator.Play(System.Enum.GetName(typeof(PLAYER_ANIMATION), nextAnimation));
@@ -323,7 +323,7 @@ void Awake()
     {
         _animator.speed = 1.0f;
     }
-    */
+
     #endregion
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -388,6 +388,8 @@ void Awake()
     {
         if (lantern.currentLightType == LightSource.LIGHT_TYPE.red) { lantern.changeLightType(LightSource.LIGHT_TYPE.magical); }
         isDead = false;
+        changeAnimation(PlayerController.PLAYER_ANIMATION.Falling);
+        changeAnimation(PlayerController.PLAYER_ANIMATION.Idle);
         transform.position = respawnPosition;
         lantern.Respawn();
         fadeInTimer = -0.4f;

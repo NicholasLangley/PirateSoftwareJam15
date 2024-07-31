@@ -10,7 +10,7 @@ public class PlayerWalkingState : State
 
     public override void EnterState()
     {
-        //_player.changeAnimation(PlayerController.PLAYER_ANIMATION.Walking);
+        _player.changeAnimation(PlayerController.PLAYER_ANIMATION.Walking);
         FrameUpdate();
     }
 

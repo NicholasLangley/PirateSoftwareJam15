@@ -15,7 +15,7 @@ public class PlayerAirborneState : State
 
     public override void ExitState()
     {
-        //_player.UnpauseAnimation();
+        _player.UnpauseAnimation();
     }
 
     public override void FrameUpdate()
@@ -26,7 +26,7 @@ public class PlayerAirborneState : State
 
         if (_player._currentYSpeed <= 0f)
         {
-            //_player.changeAnimation(PlayerController.PLAYER_ANIMATION.Falling);
+            _player.changeAnimation(PlayerController.PLAYER_ANIMATION.Falling);
             _player._isJumping = false;
         }
         else 

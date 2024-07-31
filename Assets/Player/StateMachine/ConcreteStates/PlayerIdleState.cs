@@ -10,7 +10,7 @@ public class PlayerIdleState : State
 
     public override void EnterState()
     {
-        //_player.changeAnimation(PlayerController.PLAYER_ANIMATION.Idle);
+        _player.changeAnimation(PlayerController.PLAYER_ANIMATION.Idle);
     }
 
     public override void ExitState()
