@@ -55,6 +55,7 @@ MonoBehaviour:
   tail: {fileID: 7533057964219442426}
   isLimb: 1
   isRightLimb: 1
+  otherwiseHasAnchor: 0
   limbReachLength: 0.1
   lerpDuration: 0.05
   lineWidth: 0.01
@@ -62,12 +63,13 @@ MonoBehaviour:
   isMeshType: 1
   hasOutline: 1
   meshColor: {r: 0.007843138, g: 0.2, b: 0.08235294, a: 1}
-  outlineColor: {r: 0.004805972, g: 0.33962262, b: 0.17704515, a: 1}
+  outlineColor: {r: 0, g: 0.21698111, b: 0.11101359, a: 1}
   meshFilter: {fileID: 4654047478920013468}
   bodyCollider: {fileID: 8524771847278457537}
   leftEye: {fileID: 0}
   rightEye: {fileID: 0}
   headPosition: {x: 0, y: 0, z: 0}
+  anchorPos: {x: 0, y: 0, z: 0}
 --- !u!23 &2237919396336470630
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -223,6 +225,7 @@ MonoBehaviour:
   tail: {fileID: 2116578319476226618}
   isLimb: 1
   isRightLimb: 1
+  otherwiseHasAnchor: 0
   limbReachLength: 0.09
   lerpDuration: 0.05
   lineWidth: 0.01
@@ -230,12 +233,13 @@ MonoBehaviour:
   isMeshType: 1
   hasOutline: 1
   meshColor: {r: 0.007843138, g: 0.2, b: 0.08235294, a: 1}
-  outlineColor: {r: 0.004805972, g: 0.33962262, b: 0.17704515, a: 1}
+  outlineColor: {r: 0, g: 0.21960784, b: 0.11372549, a: 1}
   meshFilter: {fileID: 8023797815238058285}
   bodyCollider: {fileID: 96343550969085018}
   leftEye: {fileID: 0}
   rightEye: {fileID: 0}
   headPosition: {x: 0, y: 0, z: 0}
+  anchorPos: {x: 0, y: 0, z: 0}
 --- !u!23 &4968426280379125356
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -543,6 +547,7 @@ MonoBehaviour:
   tail: {fileID: 6427871636559334452}
   isLimb: 0
   isRightLimb: 0
+  otherwiseHasAnchor: 0
   limbReachLength: 0
   lerpDuration: 0
   lineWidth: 0.01
@@ -556,6 +561,7 @@ MonoBehaviour:
   leftEye: {fileID: 7964072885308827138}
   rightEye: {fileID: 3160879453175982672}
   headPosition: {x: 0, y: 0, z: 0}
+  anchorPos: {x: 0, y: 0, z: 0}
 --- !u!23 &6468364883595683421
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1969,6 +1975,7 @@ MonoBehaviour:
   tail: {fileID: 4290509203516512848}
   isLimb: 1
   isRightLimb: 0
+  otherwiseHasAnchor: 0
   limbReachLength: 0.105
   lerpDuration: 0.05
   lineWidth: 0.01
@@ -1976,12 +1983,13 @@ MonoBehaviour:
   isMeshType: 1
   hasOutline: 1
   meshColor: {r: 0.007843138, g: 0.2, b: 0.08235294, a: 1}
-  outlineColor: {r: 0.004805972, g: 0.33962262, b: 0.17704515, a: 1}
+  outlineColor: {r: 0, g: 0.21960784, b: 0.11372549, a: 1}
   meshFilter: {fileID: 3272651049539735395}
   bodyCollider: {fileID: 2474350430016325307}
   leftEye: {fileID: 0}
   rightEye: {fileID: 0}
   headPosition: {x: 0, y: 0, z: 0}
+  anchorPos: {x: 0, y: 0, z: 0}
 --- !u!23 &7188317733431717183
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2137,6 +2145,7 @@ MonoBehaviour:
   tail: {fileID: 8674213866207617090}
   isLimb: 1
   isRightLimb: 0
+  otherwiseHasAnchor: 0
   limbReachLength: 0.115
   lerpDuration: 0.05
   lineWidth: 0.01
@@ -2144,12 +2153,13 @@ MonoBehaviour:
   isMeshType: 1
   hasOutline: 1
   meshColor: {r: 0.007843138, g: 0.2, b: 0.08235294, a: 1}
-  outlineColor: {r: 0.004805972, g: 0.33962262, b: 0.17704515, a: 1}
+  outlineColor: {r: 0, g: 0.21960784, b: 0.11372549, a: 1}
   meshFilter: {fileID: 8091927635456747868}
   bodyCollider: {fileID: 5046204769526484307}
   leftEye: {fileID: 0}
   rightEye: {fileID: 0}
   headPosition: {x: 0, y: 0, z: 0}
+  anchorPos: {x: 0, y: 0, z: 0}
 --- !u!23 &5623152557123731842
 MeshRenderer:
   m_ObjectHideFlags: 0

@@ -22,6 +22,9 @@ public class LostWoodsManager : MonoBehaviour
     [SerializeField]
     GameObject note, ingredient;
 
+    [SerializeField]
+    List<Lizard> lizards;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -77,6 +80,16 @@ public class LostWoodsManager : MonoBehaviour
             }
         }
         else { Reset(); }
+
+        ResetLizards();
+    }
+
+    void ResetLizards()
+    {
+        foreach(Lizard liz in lizards)
+        {
+            liz.Reset();
+        }
     }
 
 

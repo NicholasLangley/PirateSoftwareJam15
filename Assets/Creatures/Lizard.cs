@@ -64,4 +64,12 @@ public class Lizard : MonoBehaviour
             lerpTimer = 0;
         }
     }
+
+    public void Reset()
+    {
+        running = false;
+        lizardHead.setHeadPosition(Vector3.zero);
+        currentDirection = Random.insideUnitCircle;
+        currentDirection.Normalize();
+    }
 }

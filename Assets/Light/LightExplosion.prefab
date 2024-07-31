@@ -388,8 +388,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentLightType: 4
-  groundTilemap: {fileID: 0}
-  lanternSphereDistance: 5
+  currentGrenadeLightType: 0
+  groundTilemaps: []
+  lanternSphereDistance: 4
   lanternConeDistance: 0
   lightBlockLayers:
     serializedVersion: 2
@@ -416,6 +417,12 @@ MonoBehaviour:
   startSize: 1
   maxSize: 5
   grenadePrefab: {fileID: 0}
+  grenadeCooldown: 0
+  magicalBackground: {fileID: 0}
+  magicalGround: {fileID: 0}
+  spriteAnchor: {fileID: 0}
+  spriteBody: {fileID: 0}
+  isDead: 0
 --- !u!1 &4325715074194352613
 GameObject:
   m_ObjectHideFlags: 0
@@ -10286,7 +10293,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ComponentVersion: 1
   m_LightType: 1
-  m_BlendStyleIndex: 0
+  m_BlendStyleIndex: 1
   m_FalloffIntensity: 0.4
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
